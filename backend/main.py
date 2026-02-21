@@ -18,6 +18,7 @@ from config import (
     MAX_INDEX_PROFILES,
     PINECONE_API_KEY,
     PINECONE_USE_INTEGRATED_EMBEDDING,
+    CORS_ORIGINS,
 )
 from indexer import load_profiles
 from search import profile_to_sourced
