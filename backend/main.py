@@ -1,6 +1,7 @@
 """
 FastAPI app for LinkedIn-powered alumni search.
-Uses ChromaDB for vector search; serves full alumni list from JSON for Directory.
+Uses Pinecone only for vector search; serves full alumni list from JSON for Directory.
+(ChromaDB code is kept in the repo but not connected.)
 """
 from contextlib import asynccontextmanager
 
@@ -9,38 +10,43 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from openai import OpenAI
 
-from config import OPENAI_API_KEY, DATA_PATH, EMBEDDING_MODEL, TOP_K
-from indexer import load_profiles, build_document, embed_texts
+from config import (
+    OPENAI_API_KEY,
+    DATA_PATH,
+    EMBEDDING_MODEL,
+    TOP_K,
+    MAX_INDEX_PROFILES,
+    PINECONE_API_KEY,
+    PINECONE_USE_INTEGRATED_EMBEDDING,
+)
+from indexer import load_profiles
 from search import profile_to_sourced
 from query_expand import expand_query
-from chroma_store import get_client, add_to_chroma, search_chroma, search_chroma_multi
+from pinecone_store import (
+    search_pinecone,
+    search_pinecone_multi,
+    search_pinecone_by_text,
+    search_pinecone_multi_text,
+)
 
 # Loaded at startup: list of profile dicts and id -> profile for lookup
 _profiles: list[dict] = []
 _profiles_by_id: dict[str, dict] = {}
-_chroma_client = None
 
 
 @asynccontextmanager
 async def lifespan(app):
-    global _profiles, _profiles_by_id, _chroma_client
+    global _profiles, _profiles_by_id
     try:
-        _profiles = load_profiles(DATA_PATH)
-        if not _profiles:
+        if not PINECONE_API_KEY:
+            raise ValueError("PINECONE_API_KEY is required (this app uses Pinecone only)")
+
+        all_profiles = load_profiles(DATA_PATH)
+        if not all_profiles:
             raise RuntimeError("No profiles loaded from data file")
+        _profiles = all_profiles[:MAX_INDEX_PROFILES]
         _profiles_by_id = {str(p.get("id") or i): p for i, p in enumerate(_profiles)}
-
-        if not OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY is required for indexing")
-
-        documents = [build_document(p) for p in _profiles]
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        embeddings = embed_texts(client, documents)
-        embeddings_list = embeddings.tolist()
-        ids = [str(p.get("id") or i) for i, p in enumerate(_profiles)]
-
-        _chroma_client = get_client()
-        add_to_chroma(_chroma_client, ids, embeddings_list, documents)
+        # Pinecone index is populated separately (run embed_json_to_vectordb.py). Startup does not block on upsert.
     except FileNotFoundError as e:
         raise RuntimeError(f"Index build failed: {e}") from e
     except ValueError as e:
@@ -48,12 +54,11 @@ async def lifespan(app):
     yield
     _profiles = []
     _profiles_by_id = {}
-    _chroma_client = None
 
 
 app = FastAPI(
     title="FiskConnect Sourcing API",
-    description="Alumni list and semantic search over LinkedIn data (ChromaDB)",
+    description="Alumni list and semantic search over LinkedIn data (Pinecone)",
     lifespan=lifespan,
 )
 
@@ -98,26 +103,27 @@ def search(req: SearchRequest):
     if not req.query or not req.query.strip():
         return SearchResponse(alumni=[])
 
-    if not _chroma_client or not _profiles_by_id:
+    if not _profiles_by_id:
         raise HTTPException(status_code=503, detail="Search index not ready")
-
-    if not OPENAI_API_KEY:
-        raise HTTPException(status_code=503, detail="OpenAI API key not configured")
 
     # Refactor help request into 3–5 short search phrases (e.g. "Microsoft", "resume", "software engineering")
     phrases = expand_query(req.query.strip())
     if not phrases:
         return SearchResponse(alumni=[])
 
-    client = OpenAI(api_key=OPENAI_API_KEY)
-    resp = client.embeddings.create(input=phrases, model=EMBEDDING_MODEL)
-    query_embeddings = [e.embedding for e in resp.data]
-
-    # RAG: get chunks (one per alumni) per phrase, merge by profile id (max score)
-    if len(query_embeddings) == 1:
-        hits = search_chroma(_chroma_client, query_embeddings[0], n_results=TOP_K)
+    # RAG: get chunks (one per alumni) per phrase, merge by profile id (max score) via Pinecone
+    if PINECONE_USE_INTEGRATED_EMBEDDING:
+        hits = search_pinecone_multi_text(phrases, n_results=TOP_K)
     else:
-        hits = search_chroma_multi(_chroma_client, query_embeddings, n_results=TOP_K)
+        if not OPENAI_API_KEY:
+            raise HTTPException(status_code=503, detail="OpenAI API key not configured")
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        resp = client.embeddings.create(input=phrases, model=EMBEDDING_MODEL)
+        query_embeddings = [e.embedding for e in resp.data]
+        if len(query_embeddings) == 1:
+            hits = search_pinecone(query_embeddings[0], n_results=TOP_K)
+        else:
+            hits = search_pinecone_multi(query_embeddings, n_results=TOP_K)
 
     results = []
     for pid, score in hits:

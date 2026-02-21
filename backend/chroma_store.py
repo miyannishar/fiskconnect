@@ -1,21 +1,51 @@
 """
 ChromaDB vector store for alumni embeddings.
-Persists to disk; used for semantic search (POST /search).
+Supports: (1) Chroma Cloud (CloudClient), (2) remote Chroma (HttpClient), (3) local disk (PersistentClient).
 """
 from pathlib import Path
+from urllib.parse import urlparse
 
 import chromadb
 from chromadb.config import Settings
 
-from config import CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME
+from config import (
+    CHROMA_PERSIST_DIR,
+    CHROMA_API_KEY,
+    CHROMA_TENANT,
+    CHROMA_DATABASE,
+    CHROMA_API_URL,
+    CHROMA_TOKEN,
+    CHROMA_COLLECTION_NAME,
+)
+
+_settings = Settings(anonymized_telemetry=False)
 
 
 def get_client():
-    """Return a persistent Chroma client."""
+    """Return Chroma client: CloudClient if API key set, else HttpClient if URL set, else PersistentClient."""
+    if CHROMA_API_KEY:
+        return chromadb.CloudClient(
+            tenant=CHROMA_TENANT or "default_tenant",
+            database=CHROMA_DATABASE or "default_database",
+            api_key=CHROMA_API_KEY,
+        )
+    if CHROMA_API_URL:
+        parsed = urlparse(CHROMA_API_URL)
+        host = parsed.hostname or "localhost"
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        ssl = parsed.scheme == "https"
+        headers = {"x-chroma-token": CHROMA_TOKEN} if CHROMA_TOKEN else None
+        return chromadb.HttpClient(
+            host=host,
+            port=port,
+            ssl=ssl,
+            headers=headers,
+            settings=_settings,
+        )
     Path(CHROMA_PERSIST_DIR).mkdir(parents=True, exist_ok=True)
     return chromadb.PersistentClient(
         path=CHROMA_PERSIST_DIR,
-        settings=Settings(anonymized_telemetry=False),
+        settings=_settings,
     )
 
 
