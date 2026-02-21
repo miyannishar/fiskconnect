@@ -120,7 +120,7 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
               <Plus className="h-4 w-4" /> Create event request
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create event request</DialogTitle>
               <p className="text-sm text-muted-foreground">Events require admin approval.</p>
@@ -128,16 +128,16 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-white/10" />
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-border" />
               </div>
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} required className="bg-card border-white/10 min-h-[80px]" />
+                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} required className="bg-card border-border min-h-[80px]" />
               </div>
               <div className="space-y-2">
                 <Label>Type</Label>
                 <Select value={eventType} onValueChange={(v) => setEventType(v as (typeof EVENT_TYPES)[number])}>
-                  <SelectTrigger className="bg-card border-white/10">
+                  <SelectTrigger className="bg-card border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -152,16 +152,16 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-2">
                   <Label>Date</Label>
-                  <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-card border-white/10" />
+                  <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-card border-border" />
                 </div>
                 <div className="space-y-2">
                   <Label>Time</Label>
-                  <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="bg-card border-white/10" />
+                  <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="bg-card border-border" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Location</Label>
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} className="bg-card border-white/10" />
+                <Input value={location} onChange={(e) => setLocation(e.target.value)} className="bg-card border-border" />
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={isVirtual} onCheckedChange={setIsVirtual} />
@@ -170,12 +170,12 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
               {isVirtual && (
                 <div className="space-y-2">
                   <Label>Virtual link</Label>
-                  <Input value={virtualLink} onChange={(e) => setVirtualLink(e.target.value)} placeholder="https://..." className="bg-card border-white/10" />
+                  <Input value={virtualLink} onChange={(e) => setVirtualLink(e.target.value)} placeholder="https://..." className="bg-card border-border" />
                 </div>
               )}
               <div className="space-y-2">
                 <Label>Max attendees (optional)</Label>
-                <Input type="number" min="1" value={maxAttendees} onChange={(e) => setMaxAttendees(e.target.value)} className="bg-card border-white/10" />
+                <Input type="number" min="1" value={maxAttendees} onChange={(e) => setMaxAttendees(e.target.value)} className="bg-card border-border" />
               </div>
               <Button type="submit" className="w-full rounded-lg" disabled={loading}>
                 {loading ? "Submitting…" : "Submit for approval"}

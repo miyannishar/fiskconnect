@@ -36,7 +36,7 @@ export function Sidebar({
       <div className="flex h-14 shrink-0 items-center border-b border-border px-4 max-md:hidden">
         <Link
           href={brandHref}
-          className="flex items-center gap-2 font-semibold text-foreground hover:text-primary transition-colors"
+          className="flex items-center gap-2 font-semibold text-fisk-navy hover:text-fisk-royal transition-colors"
         >
           <span className="text-lg tracking-tight">{brandLabel}</span>
         </Link>
@@ -56,7 +56,7 @@ export function Sidebar({
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-primary/15 text-primary"
+                  ? "bg-fisk-royal/10 text-fisk-navy font-medium"
                   : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >

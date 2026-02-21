@@ -99,23 +99,23 @@ export function OpportunitiesListAndPost({
               <Plus className="h-4 w-4" /> Post opportunity
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Post an opportunity</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-white/10" />
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-border" />
               </div>
               <div className="space-y-2">
                 <Label>Description</Label>
-                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} required className="bg-card border-white/10 min-h-[80px]" />
+                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} required className="bg-card border-border min-h-[80px]" />
               </div>
               <div className="space-y-2">
                 <Label>Type</Label>
                 <Select value={type} onValueChange={(v) => setType(v as (typeof TYPES)[number])}>
-                  <SelectTrigger className="bg-card border-white/10">
+                  <SelectTrigger className="bg-card border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -129,11 +129,11 @@ export function OpportunitiesListAndPost({
               </div>
               <div className="space-y-2">
                 <Label>Company</Label>
-                <Input value={company} onChange={(e) => setCompany(e.target.value)} className="bg-card border-white/10" />
+                <Input value={company} onChange={(e) => setCompany(e.target.value)} className="bg-card border-border" />
               </div>
               <div className="space-y-2">
                 <Label>Location</Label>
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} className="bg-card border-white/10" />
+                <Input value={location} onChange={(e) => setLocation(e.target.value)} className="bg-card border-border" />
               </div>
               <div className="flex items-center gap-2">
                 <Switch checked={isRemote} onCheckedChange={setIsRemote} />
@@ -141,11 +141,11 @@ export function OpportunitiesListAndPost({
               </div>
               <div className="space-y-2">
                 <Label>External link (optional)</Label>
-                <Input value={link} onChange={(e) => setLink(e.target.value)} type="url" placeholder="https://..." className="bg-card border-white/10" />
+                <Input value={link} onChange={(e) => setLink(e.target.value)} type="url" placeholder="https://..." className="bg-card border-border" />
               </div>
               <div className="space-y-2">
                 <Label>Tags (comma-separated)</Label>
-                <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="react, internship" className="bg-card border-white/10" />
+                <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="react, internship" className="bg-card border-border" />
               </div>
               <Button type="submit" className="w-full rounded-lg" disabled={loading}>
                 {loading ? "Posting…" : "Post"}

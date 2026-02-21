@@ -140,7 +140,7 @@ export function OnboardingSteps() {
 
       {/* Step 1 */}
       {step === 1 && (
-        <Card className="bg-card border-white/10">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle>Basic info</CardTitle>
             <CardDescription>Graduation year, major, and location.</CardDescription>
@@ -152,7 +152,7 @@ export function OnboardingSteps() {
                 value={graduationYear === "" ? "" : String(graduationYear)}
                 onValueChange={(v) => setGraduationYear(v === "" ? "" : Number(v))}
               >
-                <SelectTrigger className="bg-card border-white/10">
+                <SelectTrigger className="bg-card border-border">
                   <SelectValue placeholder="Select year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -170,7 +170,7 @@ export function OnboardingSteps() {
                 value={major}
                 onChange={(e) => setMajor(e.target.value)}
                 placeholder="e.g. Computer Science"
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <div className="space-y-2">
@@ -179,7 +179,7 @@ export function OnboardingSteps() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Nashville, TN"
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <Button type="button" className="w-full rounded-lg" onClick={() => setStep(2)}>
@@ -191,7 +191,7 @@ export function OnboardingSteps() {
 
       {/* Step 2 */}
       {step === 2 && (
-        <Card className="bg-card border-white/10">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle>Professional info</CardTitle>
             <CardDescription>Connect LinkedIn to pre-fill your profile (mock).</CardDescription>
@@ -211,7 +211,7 @@ export function OnboardingSteps() {
                 value={currentTitle}
                 onChange={(e) => setCurrentTitle(e.target.value)}
                 placeholder="e.g. Senior Engineer"
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <div className="space-y-2">
@@ -220,13 +220,13 @@ export function OnboardingSteps() {
                 value={currentCompany}
                 onChange={(e) => setCurrentCompany(e.target.value)}
                 placeholder="e.g. Acme Inc"
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <div className="space-y-2">
               <Label>Industry</Label>
               <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger className="bg-card border-white/10">
+                <SelectTrigger className="bg-card border-border">
                   <SelectValue placeholder="Select industry" />
                 </SelectTrigger>
                 <SelectContent>
@@ -246,7 +246,7 @@ export function OnboardingSteps() {
                   onChange={(e) => setSkillInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
                   placeholder="Type and press Enter"
-                  className="bg-card border-white/10"
+                  className="bg-card border-border"
                 />
                 <Button type="button" variant="secondary" onClick={addSkill}>
                   Add
@@ -278,7 +278,7 @@ export function OnboardingSteps() {
                 value={linkedinUrl}
                 onChange={(e) => setLinkedinUrl(e.target.value)}
                 placeholder="https://linkedin.com/in/..."
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <div className="flex gap-2">
@@ -295,7 +295,7 @@ export function OnboardingSteps() {
 
       {/* Step 3 */}
       {step === 3 && (
-        <Card className="bg-card border-white/10">
+        <Card className="bg-card border-border">
           <CardHeader>
             <CardTitle>Preferences</CardTitle>
             <CardDescription>How you&apos;d like to engage with the community.</CardDescription>
@@ -315,7 +315,7 @@ export function OnboardingSteps() {
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="A few sentences about you..."
-                className="bg-card border-white/10 min-h-[100px]"
+                className="bg-card border-border min-h-[100px]"
               />
             </div>
             {saveError && (
@@ -349,7 +349,7 @@ export function OnboardingSteps() {
 
       {/* Mock LinkedIn modal */}
       <Dialog open={linkedInModalOpen} onOpenChange={setLinkedInModalOpen}>
-        <DialogContent className="bg-card border-white/10 max-w-md">
+        <DialogContent className="bg-card border-border max-w-md">
           <DialogHeader>
             <DialogTitle>
               {linkedInConnecting ? "Connecting to LinkedIn..." : linkedInFetched ? "Profile imported" : "Connect LinkedIn"}

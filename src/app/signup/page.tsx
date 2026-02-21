@@ -9,7 +9,7 @@ export default function SignupPage() {
         <CardHeader className="space-y-1 text-center">
           <Link
             href="/"
-            className="text-2xl font-bold tracking-tight text-primary hover:underline"
+            className="text-2xl font-bold tracking-tight text-fisk-navy hover:text-fisk-royal transition-colors"
           >
             FiskConnect
           </Link>

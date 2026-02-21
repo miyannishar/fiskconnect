@@ -9,7 +9,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+      },
       colors: {
+        "fisk-navy": "hsl(var(--fisk-navy))",
+        "fisk-gold": "hsl(var(--fisk-gold))",
+        "fisk-royal": "hsl(var(--fisk-royal))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

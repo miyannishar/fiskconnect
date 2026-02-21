@@ -83,23 +83,23 @@ export function AnnouncementsListAndPost({
               <Plus className="h-4 w-4" /> Post announcement
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-white/10 max-w-lg">
+          <DialogContent className="bg-card border-border max-w-lg">
             <DialogHeader>
               <DialogTitle>Post announcement</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Title</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-white/10" />
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} required className="bg-card border-border" />
               </div>
               <div className="space-y-2">
                 <Label>Content</Label>
-                <Textarea value={content} onChange={(e) => setContent(e.target.value)} required className="bg-card border-white/10 min-h-[120px]" />
+                <Textarea value={content} onChange={(e) => setContent(e.target.value)} required className="bg-card border-border min-h-[120px]" />
               </div>
               <div className="space-y-2">
                 <Label>Audience</Label>
                 <Select value={audience} onValueChange={(v) => setAudience(v as (typeof AUDIENCES)[number])}>
-                  <SelectTrigger className="bg-card border-white/10">
+                  <SelectTrigger className="bg-card border-border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

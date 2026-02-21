@@ -21,7 +21,7 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
 
   if (loading) {
     return (
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card/95 px-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/80 md:pl-60">
+      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
         <span className="font-semibold text-foreground">{title}</span>
         <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
       </header>
@@ -29,7 +29,7 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card/95 px-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/80 md:pl-60">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
       <Link
         href={
           profile
@@ -40,7 +40,7 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
                 : "/admin"
             : "/"
         }
-        className="font-semibold text-foreground transition-colors hover:text-primary"
+        className="font-semibold text-fisk-navy transition-colors hover:text-fisk-royal"
       >
         {title}
       </Link>

@@ -100,7 +100,7 @@ export function SignupForm() {
           onChange={(e) => setFullName(e.target.value)}
           placeholder="Jane Doe"
           required
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
       </div>
       <div className="space-y-2">
@@ -112,7 +112,7 @@ export function SignupForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@my.fisk.edu"
           required
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
         <RoleBadge email={email} />
       </div>
@@ -125,7 +125,7 @@ export function SignupForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
       </div>
       <div className="space-y-2">
@@ -136,7 +136,7 @@ export function SignupForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
       </div>
       {error && (

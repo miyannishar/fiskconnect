@@ -47,10 +47,10 @@ export function StudentOpportunitiesClient({
           placeholder="Search by keyword..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="bg-card border-white/10 max-w-xs"
+          className="bg-card border-border max-w-xs"
         />
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[180px] bg-card border-white/10">
+          <SelectTrigger className="w-[180px] bg-card border-border">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -66,7 +66,7 @@ export function StudentOpportunitiesClient({
           placeholder="Location"
           value={locationFilter}
           onChange={(e) => setLocationFilter(e.target.value)}
-          className="bg-card border-white/10 max-w-xs"
+          className="bg-card border-border max-w-xs"
         />
       </div>
 

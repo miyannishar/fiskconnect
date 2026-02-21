@@ -81,7 +81,7 @@ export function DonationForm() {
 
   return (
     <div className="space-y-8">
-      <Card className="bg-card border-white/10">
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Make a donation</CardTitle>
           <p className="text-sm text-muted-foreground">This is a demo — no real payment is processed.</p>
@@ -97,13 +97,13 @@ export function DonationForm() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
-                className="bg-card border-white/10"
+                className="bg-card border-border"
               />
             </div>
             <div className="space-y-2">
               <Label>Purpose</Label>
               <Select value={purpose} onValueChange={(v) => setPurpose(v as (typeof PURPOSES)[number])}>
-                <SelectTrigger className="bg-card border-white/10">
+                <SelectTrigger className="bg-card border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -117,7 +117,7 @@ export function DonationForm() {
             </div>
             <div className="space-y-2">
               <Label>Message (optional)</Label>
-              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} className="bg-card border-white/10" />
+              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} className="bg-card border-border" />
             </div>
             <div className="flex items-center gap-2">
               <Switch checked={isAnonymous} onCheckedChange={setIsAnonymous} />
@@ -130,7 +130,7 @@ export function DonationForm() {
         </CardContent>
       </Card>
 
-      <Card className="bg-card border-white/10">
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Your donation history</CardTitle>
         </CardHeader>
@@ -141,7 +141,7 @@ export function DonationForm() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 text-left">
+                  <tr className="border-b border-border text-left">
                     <th className="pb-2 font-medium">Date</th>
                     <th className="pb-2 font-medium">Amount</th>
                     <th className="pb-2 font-medium">Purpose</th>

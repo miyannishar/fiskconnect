@@ -94,7 +94,7 @@ export function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@my.fisk.edu"
           required
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
       </div>
       <div className="space-y-2">
@@ -105,7 +105,7 @@ export function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="bg-card border-white/10"
+          className="bg-card border-border"
         />
       </div>
       {error && (
