@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { DataCard } from "@/components/shared/DataCard";
 import { OpportunityCard } from "@/components/shared/OpportunityCard";
 import { AlumniCard } from "@/components/shared/AlumniCard";
 import type { Opportunity } from "@/lib/types";
@@ -35,22 +37,22 @@ export default async function StudentDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">
-          Welcome back{profile?.full_name ? `, ${profile.full_name}` : ""}
-        </h1>
-        <p className="text-muted-foreground mt-1">Discover opportunities and connect with alumni.</p>
-      </div>
+      <PageHeader
+        title={profile?.full_name ? `Welcome back, ${profile.full_name}` : "Welcome back"}
+        description="Discover opportunities and connect with alumni."
+      />
 
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Recent opportunities</h2>
-          <Button asChild variant="outline" size="sm" className="rounded-lg">
+      <DataCard
+        title="Recent opportunities"
+        description="Latest openings from alumni and partners."
+        action={
+          <Button asChild variant="outline" size="sm">
             <Link href="/student/opportunities">View all</Link>
           </Button>
-        </div>
+        }
+      >
         {opportunitiesWithAuthor.length === 0 ? (
-          <p className="text-muted-foreground text-sm">No opportunities yet.</p>
+          <p className="py-6 text-center text-muted-foreground">No opportunities yet.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {opportunitiesWithAuthor.map((o) => (
@@ -58,17 +60,19 @@ export default async function StudentDashboardPage() {
             ))}
           </div>
         )}
-      </section>
+      </DataCard>
 
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Featured alumni mentors</h2>
-          <Button asChild variant="outline" size="sm" className="rounded-lg">
+      <DataCard
+        title="Featured alumni mentors"
+        description="Alumni open to mentoring and connections."
+        action={
+          <Button asChild variant="outline" size="sm">
             <Link href="/student/find-alumni">Find alumni</Link>
           </Button>
-        </div>
+        }
+      >
         {(!featuredAlumni || featuredAlumni.length === 0) ? (
-          <p className="text-muted-foreground text-sm">No alumni mentors yet.</p>
+          <p className="py-6 text-center text-muted-foreground">No alumni mentors yet.</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {(featuredAlumni as Profile[]).map((a) => (
@@ -76,7 +80,7 @@ export default async function StudentDashboardPage() {
             ))}
           </div>
         )}
-      </section>
+      </DataCard>
     </div>
   );
 }

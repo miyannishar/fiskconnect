@@ -28,7 +28,7 @@ export function AnnouncementCard({
   });
 
   return (
-    <Card className={cn("bg-card border-white/10 rounded-xl hover:border-primary/20 transition-colors", className)}>
+    <Card className={cn("border-border/50 bg-card shadow-sm transition-shadow hover:shadow-md hover:border-primary/20", className)}>
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
           <CardTitle className="text-foreground text-lg">{announcement.title}</CardTitle>

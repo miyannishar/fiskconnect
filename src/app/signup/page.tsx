@@ -1,16 +1,25 @@
 import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignupForm } from "@/components/auth/SignupForm";
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-6 text-center">
-        <Link href="/" className="text-2xl font-bold text-primary">
-          FiskConnect
-        </Link>
-        <h1 className="text-xl font-semibold text-foreground">Create an account</h1>
-        <SignupForm />
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md border-border bg-card shadow-lg">
+        <CardHeader className="space-y-1 text-center">
+          <Link
+            href="/"
+            className="text-2xl font-bold tracking-tight text-primary hover:underline"
+          >
+            FiskConnect
+          </Link>
+          <CardTitle className="text-xl">Create an account</CardTitle>
+          <CardDescription>Use your Fisk University email to sign up.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SignupForm />
+        </CardContent>
+      </Card>
     </div>
   );
 }

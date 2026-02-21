@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { AdminUsersClient } from "./AdminUsersClient";
 import type { Profile } from "@/lib/types";
 
@@ -11,10 +12,10 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Users</h1>
-        <p className="text-muted-foreground mt-1">View all users by role.</p>
-      </div>
+      <PageHeader
+        title="Users"
+        description="View and manage all users by role."
+      />
       <AdminUsersClient initialProfiles={(profiles ?? []) as Profile[]} />
     </div>
   );

@@ -1,5 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, DollarSign, Calendar } from "lucide-react";
+import { StatCard } from "@/components/shared/StatCard";
+import {
+  GraduationCap,
+  UsersRound,
+  Shield,
+  Briefcase,
+  DollarSign,
+  CalendarClock,
+} from "lucide-react";
 
 interface StatsCardsProps {
   studentsCount: number;
@@ -19,61 +26,37 @@ export function StatsCards({
   pendingEventsCount,
 }: StatsCardsProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Students</CardTitle>
-          <Users className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">{studentsCount}</p>
-        </CardContent>
-      </Card>
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Alumni</CardTitle>
-          <Users className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">{alumniCount}</p>
-        </CardContent>
-      </Card>
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Admins</CardTitle>
-          <Users className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">{adminsCount}</p>
-        </CardContent>
-      </Card>
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Opportunities</CardTitle>
-          <Briefcase className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">{opportunitiesCount}</p>
-        </CardContent>
-      </Card>
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Donations total</CardTitle>
-          <DollarSign className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">${donationsTotal.toFixed(2)}</p>
-        </CardContent>
-      </Card>
-      <Card className="bg-card border-white/10">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Pending events</CardTitle>
-          <Calendar className="h-4 w-4 text-primary" />
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-foreground">{pendingEventsCount}</p>
-        </CardContent>
-      </Card>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <StatCard
+        title="Students"
+        value={studentsCount}
+        icon={GraduationCap}
+      />
+      <StatCard
+        title="Alumni"
+        value={alumniCount}
+        icon={UsersRound}
+      />
+      <StatCard
+        title="Admins"
+        value={adminsCount}
+        icon={Shield}
+      />
+      <StatCard
+        title="Opportunities"
+        value={opportunitiesCount}
+        icon={Briefcase}
+      />
+      <StatCard
+        title="Donations total"
+        value={`$${donationsTotal.toFixed(2)}`}
+        icon={DollarSign}
+      />
+      <StatCard
+        title="Pending events"
+        value={pendingEventsCount}
+        icon={CalendarClock}
+      />
     </div>
   );
 }

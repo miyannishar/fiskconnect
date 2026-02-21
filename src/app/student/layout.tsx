@@ -22,7 +22,7 @@ export default async function StudentLayout({
   return (
     <div className="min-h-screen bg-background">
       <Sidebar navItems={studentNavItems} />
-      <div className="md:pl-56 min-h-screen flex flex-col">
+      <div className="md:pl-60 min-h-screen flex flex-col">
         <Navbar title="FiskConnect" />
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>

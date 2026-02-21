@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { DataCard } from "@/components/shared/DataCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,22 +19,22 @@ export default async function AlumniProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-        <p className="text-muted-foreground mt-1">Your public profile for the alumni directory.</p>
-      </div>
-      <Card className="bg-card border-white/10">
-        <CardHeader>
+    <div className="max-w-2xl space-y-6">
+      <PageHeader
+        title="My Profile"
+        description="Your public profile for the alumni directory."
+      />
+      <DataCard title="" noPadding>
+        <div className="p-6">
           <div className="flex items-start gap-4">
-            <Avatar className="h-16 w-16">
+            <Avatar className="h-16 w-16 border border-border">
               <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.full_name ?? profile.email} />
-              <AvatarFallback className="bg-primary/20 text-primary text-xl">
+              <AvatarFallback className="bg-primary/20 text-xl text-primary">
                 {(profile.full_name ?? profile.email).slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-xl">{profile.full_name ?? profile.email}</CardTitle>
+              <h2 className="text-xl font-semibold">{profile.full_name ?? profile.email}</h2>
               <p className="text-sm text-muted-foreground">{profile.email}</p>
               {profile.graduation_year && (
                 <p className="text-sm text-muted-foreground">Class of {profile.graduation_year}</p>
@@ -48,8 +49,7 @@ export default async function AlumniProfilePage() {
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          <div className="mt-6 space-y-4 border-t border-border pt-6">
           {(profile.current_title || profile.current_company) && (
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">Current role</h3>
@@ -104,8 +104,9 @@ export default async function AlumniProfilePage() {
               </a>
             </div>
           )}
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      </DataCard>
     </div>
   );
 }

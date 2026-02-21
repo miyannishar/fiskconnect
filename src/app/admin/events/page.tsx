@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { AdminEventsClient } from "./AdminEventsClient";
 import type { Event } from "@/lib/types";
 import type { Profile } from "@/lib/types";
@@ -17,10 +18,10 @@ export default async function AdminEventsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Event requests</h1>
-        <p className="text-muted-foreground mt-1">Approve or reject event requests.</p>
-      </div>
+      <PageHeader
+        title="Events"
+        description="Approve or reject event requests from alumni."
+      />
       <AdminEventsClient initialEvents={list} />
     </div>
   );

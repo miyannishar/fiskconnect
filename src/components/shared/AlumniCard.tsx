@@ -21,7 +21,7 @@ export function AlumniCard({ alumni, onConnect, className }: AlumniCardProps) {
   const graduationYear = alumni.graduation_year ? `Class of ${alumni.graduation_year}` : null;
 
   return (
-    <Card className={cn("bg-card border-white/10 rounded-xl hover:border-primary/20 transition-colors", className)}>
+    <Card className={cn("border-border/50 bg-card shadow-sm transition-shadow hover:shadow-md hover:border-primary/20", className)}>
       <CardHeader className="pb-2">
         <div className="flex items-start gap-3">
           <Avatar className="h-12 w-12">

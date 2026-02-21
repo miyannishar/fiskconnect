@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { AnnouncementsListAndPost } from "./AnnouncementsListAndPost";
 import type { Announcement } from "@/lib/types";
 import type { Profile } from "@/lib/types";
@@ -21,10 +22,10 @@ export default async function AlumniAnnouncementsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Announcements</h1>
-        <p className="text-muted-foreground mt-1">View and post announcements.</p>
-      </div>
+      <PageHeader
+        title="Announcements"
+        description="View and post announcements to the community."
+      />
       <AnnouncementsListAndPost initialAnnouncements={list} />
     </div>
   );

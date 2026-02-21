@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { StatsCards } from "@/components/admin/StatsCards";
 
 export default async function AdminDashboardPage() {
@@ -33,10 +34,10 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Overview of the platform.</p>
-      </div>
+      <PageHeader
+        title="Dashboard"
+        description="Overview of the FiskConnect platform."
+      />
       <StatsCards
         studentsCount={studentsCount ?? 0}
         alumniCount={alumniCount ?? 0}

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { EventsListAndCreate } from "./EventsListAndCreate";
 import type { Event } from "@/lib/types";
 import type { Profile } from "@/lib/types";
@@ -20,10 +21,10 @@ export default async function AlumniEventsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Events</h1>
-        <p className="text-muted-foreground mt-1">Browse events and create event requests.</p>
-      </div>
+      <PageHeader
+        title="Events"
+        description="Browse events and submit event requests for approval."
+      />
       <EventsListAndCreate initialEvents={list} />
     </div>
   );

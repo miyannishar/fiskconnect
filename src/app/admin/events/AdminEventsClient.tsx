@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { DataCard } from "@/components/shared/DataCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,69 +53,71 @@ export function AdminEventsClient({ initialEvents }: { initialEvents: EventWithO
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px] bg-card border-white/10">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-muted-foreground">No events match.</p>
-      ) : (
-        <div className="space-y-4">
-          {filtered.map((e) => (
-            <Card key={e.id} className="bg-card border-white/10">
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{e.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      By {e.organizerName ?? "Unknown"} · {formatDateTime(e.date)}
-                    </p>
+    <div className="space-y-6">
+      <DataCard
+        title="Event requests"
+        description="Review and approve or reject event submissions."
+        action={
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[160px] border-border">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+        }
+      >
+        {filtered.length === 0 ? (
+          <p className="py-8 text-center text-muted-foreground">No events match.</p>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map((e) => (
+              <Card key={e.id} className="border-border/50 bg-card/50 shadow-sm">
+                <CardHeader className="pb-2">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <CardTitle className="text-lg">{e.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        By {e.organizerName ?? "Unknown"} · {formatDateTime(e.date)}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={
+                        e.status === "approved"
+                          ? "default"
+                          : e.status === "rejected"
+                            ? "destructive"
+                            : "secondary"
+                      }
+                    >
+                      {e.status}
+                    </Badge>
                   </div>
-                  <Badge
-                    variant={
-                      e.status === "approved"
-                        ? "default"
-                        : e.status === "rejected"
-                          ? "destructive"
-                          : "secondary"
-                    }
-                  >
-                    {e.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{e.description}</p>
-                {e.status === "pending" && (
-                  <div className="flex gap-2">
+                </CardHeader>
+                <CardContent>
+                  <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{e.description}</p>
+                  {e.status === "pending" && (
                     <Button
                       size="sm"
-                      className="rounded-lg bg-success hover:bg-success/90"
+                      className="bg-success hover:bg-success/90"
                       onClick={() => setSelected(e)}
                     >
                       Review
                     </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </DataCard>
 
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent className="bg-card border-white/10 max-w-lg">
+        <DialogContent className="max-w-lg border-border bg-card">
           <DialogHeader>
             <DialogTitle>{selected?.title}</DialogTitle>
           </DialogHeader>
@@ -131,12 +134,12 @@ export function AdminEventsClient({ initialEvents }: { initialEvents: EventWithO
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
                   placeholder="Notes for the organizer..."
-                  className="bg-card border-white/10"
+                  className="border-border"
                 />
               </div>
               <div className="flex gap-2">
                 <Button
-                  className="rounded-lg bg-success hover:bg-success/90"
+                  className="bg-success hover:bg-success/90"
                   disabled={loading}
                   onClick={() => updateStatus(selected.id, "approved")}
                 >
@@ -144,7 +147,6 @@ export function AdminEventsClient({ initialEvents }: { initialEvents: EventWithO
                 </Button>
                 <Button
                   variant="destructive"
-                  className="rounded-lg"
                   disabled={loading}
                   onClick={() => updateStatus(selected.id, "rejected")}
                 >
