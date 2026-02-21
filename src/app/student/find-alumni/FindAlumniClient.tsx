@@ -1,167 +1,90 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { AlumniCard } from "@/components/shared/AlumniCard";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import type { Profile } from "@/lib/types";
+import { useState } from "react";
+import { SourcedAlumniCard } from "@/components/shared/SourcedAlumniCard";
+import { Button } from "@/components/ui/button";
+import type { SourcedAlumni } from "@/lib/types";
 
-const INDUSTRIES = [
-  "Technology",
-  "Healthcare",
-  "Finance",
-  "Education",
-  "Government",
-  "Nonprofit",
-  "Consulting",
-  "Media",
-  "Other",
-];
+const SOURCING_API_URL = process.env.NEXT_PUBLIC_SOURCING_API_URL || "";
 
-export function FindAlumniClient({ initialAlumni }: { initialAlumni: Profile[] }) {
-  const [search, setSearch] = useState("");
-  const [industry, setIndustry] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [openToMentorOnly, setOpenToMentorOnly] = useState(false);
-  const [gradYearFrom, setGradYearFrom] = useState("");
-  const [gradYearTo, setGradYearTo] = useState("");
-  const [connectModalAlumni, setConnectModalAlumni] = useState<Profile | null>(null);
+export function FindAlumniClient() {
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [alumni, setAlumni] = useState<SourcedAlumni[]>([]);
 
-  const filtered = useMemo(() => {
-    return initialAlumni.filter((a) => {
-      const searchLower = search.toLowerCase();
-      const matchSearch =
-        !search ||
-        (a.full_name?.toLowerCase().includes(searchLower)) ||
-        (a.email?.toLowerCase().includes(searchLower)) ||
-        (a.current_company?.toLowerCase().includes(searchLower)) ||
-        (a.current_title?.toLowerCase().includes(searchLower)) ||
-        (a.major?.toLowerCase().includes(searchLower)) ||
-        (a.skills?.some((s) => s.toLowerCase().includes(searchLower)));
-      const matchIndustry = industry === "all" || a.industry === industry;
-      const matchLocation =
-        !locationFilter ||
-        (a.location?.toLowerCase().includes(locationFilter.toLowerCase()));
-      const matchMentor = !openToMentorOnly || a.open_to_mentor;
-      const matchYearFrom = !gradYearFrom || (a.graduation_year != null && a.graduation_year >= parseInt(gradYearFrom, 10));
-      const matchYearTo = !gradYearTo || (a.graduation_year != null && a.graduation_year <= parseInt(gradYearTo, 10));
-      return matchSearch && matchIndustry && matchLocation && matchMentor && matchYearFrom && matchYearTo;
-    });
-  }, [initialAlumni, search, industry, locationFilter, openToMentorOnly, gradYearFrom, gradYearTo]);
+  async function handleSearch() {
+    if (!query.trim() || !SOURCING_API_URL) {
+      setError(SOURCING_API_URL ? "Describe the help you need." : "Search is not configured.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch(`${SOURCING_API_URL}/search`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query.trim() }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || res.statusText || "Search failed");
+      }
+      const data = await res.json();
+      setAlumni((data.alumni || []) as SourcedAlumni[]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Search failed");
+      setAlumni([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-4">
-        <Input
-          placeholder="Search by name, company, title, skills, major..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="bg-card border-white/10 max-w-md"
+      <p className="text-sm text-muted-foreground">
+        Ask for the <strong>help</strong> you need—e.g. resume for Microsoft or big tech, interview prep, career advice. We&apos;ll find alumni who match and show their cards so you can reach out on LinkedIn.
+      </p>
+      <div className="flex flex-col gap-2">
+        <textarea
+          placeholder="e.g. I need help with my resume for a software engineering role at Microsoft or another big tech company"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="min-h-[100px] w-full max-w-xl rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          disabled={!SOURCING_API_URL}
         />
-        <div className="flex flex-wrap items-center gap-4">
-          <Select value={industry} onValueChange={setIndustry}>
-            <SelectTrigger className="w-[160px] bg-card border-white/10">
-              <SelectValue placeholder="Industry" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All industries</SelectItem>
-              {INDUSTRIES.map((i) => (
-                <SelectItem key={i} value={i}>
-                  {i}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            placeholder="Location"
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
-            className="w-[160px] bg-card border-white/10"
-          />
-          <div className="flex items-center gap-2">
-            <Switch
-              id="mentor"
-              checked={openToMentorOnly}
-              onCheckedChange={setOpenToMentorOnly}
-            />
-            <Label htmlFor="mentor">Open to mentoring only</Label>
-          </div>
-          <Input
-            type="number"
-            placeholder="Grad year from"
-            value={gradYearFrom}
-            onChange={(e) => setGradYearFrom(e.target.value)}
-            className="w-[120px] bg-card border-white/10"
-          />
-          <Input
-            type="number"
-            placeholder="Grad year to"
-            value={gradYearTo}
-            onChange={(e) => setGradYearTo(e.target.value)}
-            className="w-[120px] bg-card border-white/10"
-          />
-        </div>
+        <Button
+          onClick={handleSearch}
+          disabled={loading || !query.trim() || !SOURCING_API_URL}
+        >
+          {loading ? "Finding people who can help…" : "Find people who can help"}
+        </Button>
       </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-muted-foreground text-center py-12">No alumni match your filters.</p>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((a) => (
-            <AlumniCard
-              key={a.id}
-              alumni={a}
-              onConnect={(alumni) => setConnectModalAlumni(alumni)}
-            />
-          ))}
-        </div>
+      {error && (
+        <p className="text-sm text-destructive" role="alert">
+          {error}
+        </p>
       )}
-
-      <Dialog open={!!connectModalAlumni} onOpenChange={() => setConnectModalAlumni(null)}>
-        <DialogContent className="bg-card border-white/10">
-          <DialogHeader>
-            <DialogTitle>Connect with {connectModalAlumni?.full_name ?? "Alumni"}</DialogTitle>
-          </DialogHeader>
-          {connectModalAlumni && (
-            <div className="space-y-2 text-sm">
-              <p className="text-muted-foreground">Reach out via email or LinkedIn:</p>
-              <p>
-                <strong>Email:</strong>{" "}
-                <a href={`mailto:${connectModalAlumni.email}`} className="text-primary hover:underline">
-                  {connectModalAlumni.email}
-                </a>
-              </p>
-              {connectModalAlumni.linkedin_url && (
-                <p>
-                  <strong>LinkedIn:</strong>{" "}
-                  <a
-                    href={connectModalAlumni.linkedin_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {connectModalAlumni.linkedin_url}
-                  </a>
-                </p>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {!SOURCING_API_URL && (
+        <p className="text-sm text-muted-foreground">
+          Set NEXT_PUBLIC_SOURCING_API_URL to use help search.
+        </p>
+      )}
+      {alumni.length === 0 && !loading && !error && SOURCING_API_URL && query.trim() && (
+        <p className="py-8 text-center text-muted-foreground">No matching alumni yet. Try describing the help you need above.</p>
+      )}
+      {alumni.length > 0 && (
+        <>
+          <p className="text-sm text-muted-foreground">
+            Alumni who may be able to help—reach out via LinkedIn.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {alumni.map((a) => (
+              <SourcedAlumniCard key={a.id} alumni={a} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

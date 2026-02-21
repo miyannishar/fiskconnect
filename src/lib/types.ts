@@ -22,6 +22,21 @@ export interface Profile {
   updated_at: string;
 }
 
+/** LinkedIn-sourced alumni from the sourcing API (no Supabase/email). */
+export interface SourcedAlumni {
+  id: string;
+  linkedinUrl: string;
+  fullName: string;
+  headline: string;
+  currentCompany: string;
+  currentTitle: string;
+  location: string;
+  skills: string[];
+  aboutSnippet: string;
+  photo: string;
+  relevanceScore: number;
+}
+
 export type OpportunityType =
   | "internship"
   | "job"

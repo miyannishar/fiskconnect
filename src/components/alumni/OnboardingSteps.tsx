@@ -64,6 +64,7 @@ export function OnboardingSteps() {
   const [openToMentor, setOpenToMentor] = useState(false);
   const [openToContact, setOpenToContact] = useState(true);
   const [bio, setBio] = useState("");
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   async function handleLinkedInConnect() {
     setLinkedInConnecting(true);
@@ -87,36 +88,47 @@ export function OnboardingSteps() {
 
   async function handleFinish() {
     setLoading(true);
+    setSaveError(null);
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setSaveError("You must be signed in to save.");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          graduation_year: graduationYear === "" ? null : graduationYear,
+          major: major || null,
+          location: location || null,
+          current_title: currentTitle || null,
+          current_company: currentCompany || null,
+          industry: industry || null,
+          skills: skills.length ? skills : null,
+          linkedin_url: linkedinUrl || null,
+          open_to_mentor: openToMentor,
+          open_to_contact: openToContact,
+          bio: bio || null,
+          onboarding_complete: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id);
+
+      if (error) {
+        setSaveError(error.message || "Failed to save profile.");
+        return;
+      }
+
+      refreshProfile().catch(() => {});
+      router.push("/alumni");
+      router.refresh();
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Something went wrong.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    await supabase
-      .from("profiles")
-      .update({
-        graduation_year: graduationYear === "" ? null : graduationYear,
-        major: major || null,
-        location: location || null,
-        current_title: currentTitle || null,
-        current_company: currentCompany || null,
-        industry: industry || null,
-        skills: skills.length ? skills : null,
-        linkedin_url: linkedinUrl || null,
-        open_to_mentor: openToMentor,
-        open_to_contact: openToContact,
-        bio: bio || null,
-        onboarding_complete: true,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", user.id);
-
-    await refreshProfile();
-    router.push("/alumni");
-    router.refresh();
-    setLoading(false);
   }
 
   return (
@@ -306,6 +318,11 @@ export function OnboardingSteps() {
                 className="bg-card border-white/10 min-h-[100px]"
               />
             </div>
+            {saveError && (
+              <p className="text-sm text-destructive" role="alert">
+                {saveError}
+              </p>
+            )}
             <div className="flex gap-2">
               <Button type="button" variant="outline" className="rounded-lg" onClick={() => setStep(2)}>
                 Back
