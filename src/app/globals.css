@@ -2,6 +2,232 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dayos-style hero animations */
+@keyframes hero-line-in {
+  from {
+    opacity: 1;
+    transform: translate(-50px, 100%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-bg-in {
+  from {
+    opacity: 0;
+    transform: translateY(20%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-heading-lines__line {
+  transform: translate(-50px, 100%);
+}
+
+.hero-heading-lines__line--animate {
+  animation: hero-line-in 0.7s cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
+}
+
+.hero-home__desc {
+  animation: hero-fade-up 0.7s cubic-bezier(0.39, 0.575, 0.565, 1) 0.5s both;
+}
+
+.hero-home__bg {
+  animation: hero-bg-in 0.9s cubic-bezier(0.39, 0.575, 0.565, 1) 0.1s both;
+}
+
+/* Dayos-style layout (the-container + the-grid) */
+.dayos-container {
+  width: 100%;
+  max-width: min(calc(100vw - 4.8rem), 85rem);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+}
+@media (min-width: 768px) {
+  .dayos-container {
+    max-width: min(calc(100vw - 8rem), 85rem);
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.dayos-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.6rem;
+}
+@media (min-width: 768px) {
+  .dayos-grid {
+    gap: 2.4rem;
+  }
+}
+
+/* Dayos pricing-card style: bullet, line, white rounded block */
+.dayos-pricing-card {
+  position: relative;
+  grid-column: span 6;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+}
+@media (min-width: 768px) {
+  .dayos-pricing-card {
+    grid-column: span 4;
+  }
+}
+.dayos-pricing-card__line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: hsl(var(--border));
+}
+.dayos-pricing-card__icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  margin-bottom: 1.2rem;
+  position: absolute;
+  top: -1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dayos-pricing-card__top {
+  text-align: center;
+  background: white;
+  border-radius: 1.25rem;
+  margin-top: 1.6rem;
+  padding: 1.6rem;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid hsl(var(--border));
+}
+.dayos-pricing-card__points {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  text-align: left;
+}
+
+/* Dayos carousel-item-card style: image + details, rounded-3xl */
+.dayos-carousel-card {
+  grid-column: span 12;
+  min-height: 18rem;
+  border-radius: 2.4rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+@media (min-width: 768px) {
+  .dayos-carousel-card {
+    grid-column: span 4;
+    min-height: 22rem;
+  }
+}
+.dayos-carousel-card__image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 411 / 200;
+  background: hsl(var(--muted));
+}
+.dayos-carousel-card__details {
+  width: 100%;
+  flex: 1;
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.dayos-carousel-card--dark {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Dayos-style rounded section (overlap hero) */
+.rounded-section {
+  --radius: 2rem;
+  position: relative;
+  margin-top: calc(var(--radius) * -1);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  overflow: clip;
+  background: hsl(var(--background));
+}
+@media (max-width: 767px) {
+  .rounded-section {
+    --radius: 1.25rem;
+  }
+}
+
+/* Scroll-reveal: sections animate in when they enter viewport */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.6s cubic-bezier(0.39, 0.575, 0.565, 1),
+    transform 0.6s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+.animate-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s cubic-bezier(0.39, 0.575, 0.565, 1),
+    transform 0.5s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+.animate-on-scroll.revealed .stagger-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+.animate-on-scroll.revealed .stagger-item.delay-1 { transition-delay: 0.08s; }
+.animate-on-scroll.revealed .stagger-item.delay-2 { transition-delay: 0.16s; }
+.animate-on-scroll.revealed .stagger-item.delay-3 { transition-delay: 0.24s; }
+.animate-on-scroll.revealed .stagger-item.delay-4 { transition-delay: 0.32s; }
+.animate-on-scroll.revealed .stagger-item.delay-5 { transition-delay: 0.4s; }
+
+/* Interactive card hover lift + border */
+.interactive-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.interactive-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+}
+
+/* Triangle node hover */
+.triangle-node {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.triangle-node:hover {
+  transform: scale(1.05);
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -28,6 +254,7 @@
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
     --safe-area-inset-left: env(safe-area-inset-left, 0px);
     --safe-area-inset-right: env(safe-area-inset-right, 0px);
+    --nav-height: 4rem;
   }
 
   body {

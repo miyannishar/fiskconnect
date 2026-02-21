@@ -1,120 +1,129 @@
 import Link from "next/link";
-import { Instagram, Facebook, Twitter, Youtube } from "lucide-react";
-import { SocialLinks } from "@/components/molecules/SocialLinks";
+import { Instagram, Linkedin, Youtube, Twitter } from "lucide-react";
+import { Logo } from "@/components/atoms/Logo";
 
-const socialItems = [
+/** Dayos-style footer: black bg, grid with logo, link groups, bottom row (legal, socials). */
+const linkGroups = [
   {
-    href: "https://instagram.com/fiskuniversity",
-    label: "Instagram",
-    icon: <Instagram className="h-5 w-5" />,
+    label: "Students",
+    items: [
+      { label: "Opportunities", href: "/login" },
+      { label: "Find alumni", href: "/login" },
+      { label: "Dashboard", href: "/login" },
+    ],
   },
   {
-    href: "https://facebook.com/fiskuniversity",
-    label: "Facebook",
-    icon: <Facebook className="h-5 w-5" />,
+    label: "Alumni",
+    items: [
+      { label: "Give back", href: "/login" },
+      { label: "Opportunity Board", href: "/login" },
+    ],
   },
   {
-    href: "https://twitter.com/fiskuniversity",
-    label: "Twitter",
-    icon: <Twitter className="h-5 w-5" />,
-  },
-  {
-    href: "https://youtube.com/fiskuniversity",
-    label: "YouTube",
-    icon: <Youtube className="h-5 w-5" />,
+    label: "Campus",
+    items: [
+      { label: "About", href: "/" },
+      { label: "Contact", href: "/login" },
+    ],
   },
 ];
 
-/** Organism: Site footer – social strip + links + CTA block. */
+const socialItems = [
+  { href: "https://instagram.com/fiskuniversity", label: "Instagram", icon: Instagram },
+  { href: "https://linkedin.com/school/fiskuniversity", label: "LinkedIn", icon: Linkedin },
+  { href: "https://youtube.com/fiskuniversity", label: "YouTube", icon: Youtube },
+  { href: "https://twitter.com/fiskuniversity", label: "Twitter", icon: Twitter },
+];
+
 export function FooterSection() {
   return (
-    <footer className="footer bg-secondary text-secondary-foreground">
-      <div className="footer__social-strip bg-background border-b border-border">
-        <div className="footer__social-inner max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm">
-          <span className="text-muted-foreground text-center sm:text-left">
-            Follow <strong className="text-accent">Fisk</strong> on social:
-          </span>
-          <SocialLinks items={socialItems} />
-        </div>
+    <footer className="footer bg-black text-white overflow-clip">
+      {/* Top: nav bar (dayos repeats TheNav with theme black) */}
+      <div className="footer__nav h-[var(--nav-height)] flex items-center justify-between px-4 md:px-8 max-w-[1600px] mx-auto">
+        <Logo href="/" showWordmark={true} className="h-8 text-white [&>span:first-child]:bg-white [&>span:first-child]:text-black" />
+        <Link
+          href="/signup"
+          className="text-sm font-semibold text-white hover:opacity-80 transition-opacity"
+        >
+          Get started
+        </Link>
       </div>
 
-      <div className="footer__main max-w-6xl mx-auto px-4 py-10 sm:py-12 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-        <div className="footer__links md:col-span-2 space-y-6">
-          <h3 className="footer__heading text-sm font-semibold uppercase tracking-wider text-white/90">
-            Student resources
-          </h3>
-          <ul
-            className="footer__list grid grid-cols-2 gap-x-6 gap-y-3 sm:gap-x-8 sm:gap-y-2 text-sm text-white/80"
-            role="list"
-          >
-            <li>
+      <div className="footer__wrap py-10 md:py-16 px-4 md:px-8 max-w-[1600px] mx-auto">
+        <div className="footer__top grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 font-medium text-base leading-tight tracking-tight">
+          {/* Left: logo + back to top (mobile) / mail */}
+          <div className="md:col-span-3 flex flex-col md:flex-row md:items-start gap-4">
+            <Link href="/" className="sr-only md:not-sr-only md:block">
+              FiskConnect Home
+            </Link>
+            <div className="flex flex-row items-center justify-between md:block">
+              <span className="text-white/70">Questions?</span>
               <Link
                 href="/login"
-                className="footer__link hover:text-white hover:underline min-h-[44px] flex items-center"
+                className="text-primary hover:underline ml-1"
               >
-                Opportunities
+                Contact us
               </Link>
-            </li>
-            <li>
-              <Link
-                href="/login"
-                className="footer__link hover:text-white hover:underline min-h-[44px] flex items-center"
-              >
-                Find alumni
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/login"
-                className="footer__link hover:text-white hover:underline min-h-[44px] flex items-center"
-              >
-                Dashboard
-              </Link>
-            </li>
-          </ul>
-          <h3 className="footer__heading text-sm font-semibold uppercase tracking-wider text-white/90 pt-4">
-            Campus links
-          </h3>
-          <ul
-            className="footer__list grid grid-cols-2 gap-x-6 gap-y-3 sm:gap-x-8 sm:gap-y-2 text-sm text-white/80"
-            role="list"
-          >
-            <li>
-              <Link
-                href="/"
-                className="footer__link hover:text-white hover:underline min-h-[44px] flex items-center"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/login"
-                className="footer__link hover:text-white hover:underline min-h-[44px] flex items-center"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-          <p className="footer__copy text-xs text-white/60 pt-6 max-w-xl">
-            Built with care at Future Fisk Hackathon 2026. FiskConnect bridges
-            students, alumni & administration.
-          </p>
+            </div>
+          </div>
+
+          {/* Right: link groups */}
+          <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
+            {linkGroups.map((group) => (
+              <div key={group.label} className="flex flex-col gap-3" role="group">
+                <span className="text-white font-medium">{group.label}</span>
+                <ul className="flex flex-col gap-2 text-white/60">
+                  {group.items.map((item) => (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        className="footer__link hover:text-white transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="footer__cta bg-accent/90 rounded-lg p-6 flex flex-col justify-center items-center md:items-start text-center md:text-left">
-          <div className="bg-white/10 px-3 py-1.5 rounded text-sm font-bold text-white mb-4">
-            FISK CONNECT
+        {/* Bottom: legal, addresses, socials */}
+        <div className="footer__bottom mt-12 md:mt-16 pt-8 border-t border-white/20 text-sm text-white/50 font-mono tracking-tight">
+          <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end md:justify-between">
+            <p className="md:max-w-md">
+              Built with care at Future Fisk Hackathon 2026. FiskConnect bridges students, alumni & administration.
+            </p>
+            <div className="flex items-center gap-4">
+              <span className="text-white/60">1000 17th Ave N, Nashville, TN 37208</span>
+              <ul className="flex items-center gap-2">
+                {socialItems.map(({ href, label, icon: Icon }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+                      aria-label={label}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <p className="text-sm text-white/90 mb-4">
-            1000 17th Ave N, Nashville, TN 37208
-          </p>
-          <Link
-            href="/login"
-            className="footer__cta-link text-sm font-semibold text-white hover:underline min-h-[44px] inline-flex items-center"
-          >
-            CONTACT US
-          </Link>
+          <ul className="flex flex-wrap gap-x-4 gap-y-2 mt-4 text-white/50">
+            <li>
+              <Link href="/login" className="hover:text-white transition-colors">
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/login" className="hover:text-white transition-colors">
+                Terms
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </footer>

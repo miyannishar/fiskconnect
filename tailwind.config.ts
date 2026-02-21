@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        condensed: ["var(--font-condensed)", "var(--font-sans)", "system-ui", "sans-serif"],
       },
       colors: {
         "fisk-navy": "hsl(var(--fisk-navy))",

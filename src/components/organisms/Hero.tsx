@@ -1,46 +1,50 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { HeroHeadingLines } from "@/components/molecules/HeroHeadingLines";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 
-/** Organism: Landing hero section – headline, subtext, CTAs. */
+/** Hero: centered text, line-by-line heading animation, desc, CTAs. */
+const HERO_LINES = [
+  "FiskConnect",
+  "Activating the",
+  "Bulldog Network.",
+];
+
+const HERO_DESC =
+  "Connecting mentorship, Fisk and Bulldog impact. To opportunity. One platform. One network.";
+
 export function Hero() {
   return (
     <section
-      className="hero relative min-h-[70vh] sm:min-h-[75vh] flex flex-col items-center justify-center text-center px-4 py-12 sm:py-16 overflow-hidden bg-gradient-to-b from-surface to-background"
+      className="hero-home relative w-full flex flex-col items-center justify-center bg-[hsl(var(--muted))] text-foreground overflow-x-clip pt-[calc(var(--nav-height,4rem)+3.2rem)] pb-8 md:pb-12 aspect-[1440/800] max-md:aspect-auto max-md:pb-0 mb-[-1px] min-h-[60vh]"
       aria-label="Welcome"
     >
-      <div
-        className="hero__bg-accent absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,hsl(var(--fisk-royal)/0.08),transparent)] pointer-events-none"
-        aria-hidden
-      />
-      <div
-        className="hero__bg-bottom absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none"
-        aria-hidden
-      />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.4]">
+        <BackgroundPaths />
+      </div>
+      <div className="hero-home__container relative z-10 w-full max-w-4xl mx-auto px-6 md:px-8 flex flex-col items-center text-center">
+        <div className="hero-home__content flex flex-col items-center text-center">
+          <HeroHeadingLines lines={HERO_LINES} className="text-center" mutedIndices={[0]} />
+          <p className="hero-home__desc mt-6 md:mt-8 text-[1.9rem] leading-[1.35] md:text-[2.2rem] md:leading-[1.25] text-muted-foreground max-w-xl text-center">
+            {HERO_DESC}
+          </p>
+        </div>
 
-      <div className="hero__content relative z-10 space-y-6 sm:space-y-8 max-w-4xl">
-        <h1 className="hero__title text-3xl min-[480px]:text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-          <span className="text-secondary">FiskConnect</span> welcomes
-        </h1>
-        <p className="hero__subtitle text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-          the class of 2029. Apply{" "}
-          <span className="text-primary font-semibold">TODAY!</span>
-        </p>
-        <p className="hero__tagline text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-          Bridging Fisk students, alumni & administration.
-        </p>
-        <div className="hero__actions flex flex-col min-[480px]:flex-row gap-3 sm:gap-4 justify-center pt-2 sm:pt-4">
+        <div className="hero-home__actions mt-6 md:mt-8 flex flex-wrap gap-3 justify-center">
           <Button
             asChild
             size="lg"
-            className="hero__cta-primary rounded-lg bg-primary text-primary-foreground hover:opacity-90 text-base px-6 sm:px-8 shadow-md min-h-[48px] sm:min-h-0"
+            className="rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold px-6 h-12 text-base"
           >
-            <Link href="/signup">Sign up</Link>
+            <Link href="/signup">Get started</Link>
           </Button>
           <Button
             asChild
             variant="outline"
             size="lg"
-            className="hero__cta-secondary rounded-lg border-secondary/30 text-secondary hover:bg-secondary/10 text-base px-6 sm:px-8 min-h-[48px] sm:min-h-0"
+            className="rounded-md border-2 border-foreground/20 text-foreground hover:bg-foreground/5 font-medium px-6 h-12 text-base"
           >
             <Link href="/login">Log in</Link>
           </Button>
