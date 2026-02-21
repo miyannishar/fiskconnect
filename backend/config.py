@@ -47,3 +47,7 @@ PINECONE_USE_INTEGRATED_EMBEDDING = os.getenv("PINECONE_USE_INTEGRATED_EMBEDDING
 PINECONE_TEXT_FIELD = os.getenv("PINECONE_TEXT_FIELD", "text")
 # Delay (seconds) between upsert batches for integrated embedding to avoid 429 (e.g. 250k TPM limit)
 PINECONE_UPSERT_BATCH_DELAY = float(os.getenv("PINECONE_UPSERT_BATCH_DELAY", "20"))
+
+# CORS: comma-separated origins (e.g. https://fisk-ten.vercel.app); localhost is always allowed in dev
+_CORS_DEFAULT = "http://localhost:3000,http://127.0.0.1:3000,https://fisk-ten.vercel.app"
+CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", _CORS_DEFAULT).split(",") if o.strip()]
