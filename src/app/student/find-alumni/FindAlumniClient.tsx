@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SourcedAlumniCard } from "@/components/shared/SourcedAlumniCard";
 import { AILoader } from "@/components/ui/ai-loader";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,31 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import type { SourcedAlumni } from "@/lib/types";
-import { Briefcase, ExternalLink, Mail, MessageCircle } from "lucide-react";
+import { Briefcase, ExternalLink, Mail, MessageCircle, Star } from "lucide-react";
 
 const SOURCING_API_URL = process.env.NEXT_PUBLIC_SOURCING_API_URL || "";
+const FAVORITE_ALUMNI_STORAGE_KEY = "fisk-student-favorite-alumni";
+
+function loadFavoritesFromStorage(): SourcedAlumni[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(FAVORITE_ALUMNI_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? (parsed as SourcedAlumni[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveFavoritesToStorage(list: SourcedAlumni[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(FAVORITE_ALUMNI_STORAGE_KEY, JSON.stringify(list));
+  } catch {
+    // ignore
+  }
+}
 
 /** Mock alumni email: firstLetter(firstName)-lastname+number@alum.fisk.edu */
 function getMockEmail(alumni: SourcedAlumni): string {
@@ -29,14 +51,10 @@ function getMockEmail(alumni: SourcedAlumni): string {
 }
 
 const SUGGESTED_PROMPTS = [
-  "Resume review for tech or big tech roles",
-  "Interview prep for software engineering",
-  "Career advice at law firms or legal sector",
-  "Finance, banking, or investment roles",
-  "Graduate school or PhD application advice",
-  "Academic advice—research, teaching, fellowships",
-  "Financial literacy or managing student debt",
-  "LinkedIn and networking best practices",
+  "I really want to work as a law consultant",
+  "I want to be a data analyst and I need some career advice",
+  "I need help with my resume review.",
+  "I am having hard time managing my finances and I need some help from my network.",
 ];
 
 export function FindAlumniClient() {
@@ -45,6 +63,32 @@ export function FindAlumniClient() {
   const [error, setError] = useState<string | null>(null);
   const [alumni, setAlumni] = useState<SourcedAlumni[]>([]);
   const [selectedAlumni, setSelectedAlumni] = useState<SourcedAlumni | null>(null);
+  const [favoriteAlumni, setFavoriteAlumni] = useState<SourcedAlumni[]>([]);
+
+  useEffect(() => {
+    setFavoriteAlumni(loadFavoritesFromStorage());
+  }, []);
+
+  function addToFavorites(a: SourcedAlumni) {
+    setFavoriteAlumni((prev) => {
+      if (prev.some((x) => x.id === a.id)) return prev;
+      const next = [...prev, a];
+      saveFavoritesToStorage(next);
+      return next;
+    });
+  }
+
+  function removeFromFavorites(id: string) {
+    setFavoriteAlumni((prev) => {
+      const next = prev.filter((x) => x.id !== id);
+      saveFavoritesToStorage(next);
+      return next;
+    });
+  }
+
+  function isFavorite(id: string) {
+    return favoriteAlumni.some((x) => x.id === id);
+  }
 
   async function handleSearch() {
     if (!query.trim() || !SOURCING_API_URL) {
@@ -78,6 +122,25 @@ export function FindAlumniClient() {
       <p className="find-alumni__intro text-base sm:text-lg text-muted-foreground leading-relaxed">
         Ask for the <strong>help</strong> you need—resume review, interview prep, career advice. We&apos;ll match you with alumni you can reach out to on LinkedIn.
       </p>
+
+      {/* Favorite Alumni section */}
+      {favoriteAlumni.length > 0 && (
+        <section className="find-alumni__favorites space-y-3" aria-label="Favorite alumni">
+          <h2 className="text-sm font-medium text-foreground">Favorite alumni</h2>
+          <p className="text-xs text-muted-foreground">
+            Alumni you&apos;ve saved from search. Click a card to view details or remove from favorites.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {favoriteAlumni.map((a) => (
+              <SourcedAlumniCard
+                key={a.id}
+                alumni={a}
+                onSelect={() => setSelectedAlumni(a)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Search card */}
       <div className="find-alumni__card rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
@@ -226,6 +289,27 @@ export function FindAlumniClient() {
                         >
                           LinkedIn <ExternalLink className="h-3.5 w-3.5" />
                         </a>
+                      </Button>
+                    )}
+                    {isFavorite(selectedAlumni.id) ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="inline-flex items-center gap-1.5"
+                        onClick={() => removeFromFavorites(selectedAlumni.id)}
+                      >
+                        <Star className="h-3.5 w-3.5 fill-current" />
+                        Remove from favorites
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="inline-flex items-center gap-1.5"
+                        onClick={() => addToFavorites(selectedAlumni)}
+                      >
+                        <Star className="h-3.5 w-3.5" />
+                        Add to favorites
                       </Button>
                     )}
                     {/* TODO: implement chat — coming soon */}
