@@ -22,7 +22,7 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
   if (loading) {
     return (
       <header className="app-navbar sticky top-0 z-30 flex h-14 min-h-[56px] items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
-        <span className="font-semibold text-foreground truncate">{title}</span>
+        {title ? <span className="font-semibold text-foreground truncate">{title}</span> : <span />}
         <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-muted" />
       </header>
     );
@@ -30,20 +30,24 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
 
   return (
     <header className="app-navbar sticky top-0 z-30 flex h-14 min-h-[56px] items-center justify-between gap-2 border-b border-border bg-card px-4 shadow-sm md:pl-60">
-      <Link
-        href={
-          profile
-            ? profile.role === "student"
-              ? "/student"
-              : profile.role === "alumni"
-                ? "/alumni"
-                : "/admin"
-            : "/"
-        }
-        className="font-semibold text-fisk-navy transition-colors hover:text-fisk-royal"
-      >
-        {title}
-      </Link>
+      {title ? (
+        <Link
+          href={
+            profile
+              ? profile.role === "student"
+                ? "/student"
+                : profile.role === "alumni"
+                  ? "/alumni"
+                  : "/admin"
+              : "/"
+          }
+          className="font-semibold text-fisk-navy transition-colors hover:text-fisk-royal"
+        >
+          {title}
+        </Link>
+      ) : (
+        <span />
+      )}
       {user && profile ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
