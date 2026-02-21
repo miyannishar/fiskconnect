@@ -2,16 +2,49 @@
 
 import { useState } from "react";
 import { SourcedAlumniCard } from "@/components/shared/SourcedAlumniCard";
+import { AILoader } from "@/components/ui/ai-loader";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import type { SourcedAlumni } from "@/lib/types";
+import { Briefcase, ExternalLink, Mail, MessageCircle } from "lucide-react";
 
 const SOURCING_API_URL = process.env.NEXT_PUBLIC_SOURCING_API_URL || "";
+
+/** Mock alumni email: firstLetter(firstName)-lastname+number@alum.fisk.edu */
+function getMockEmail(alumni: SourcedAlumni): string {
+  const parts = alumni.fullName.trim().split(/\s+/);
+  const first = parts[0] ?? "alumni";
+  const last = parts[parts.length - 1] ?? "user";
+  const firstLetter = first.charAt(0).toLowerCase();
+  const lastLower = last.toLowerCase().replace(/\W/g, "");
+  const num = alumni.id ? parseInt(alumni.id.slice(-1), 16) % 10 || 1 : 1;
+  return `${firstLetter}${lastLower}${num}@alum.fisk.edu`;
+}
+
+const SUGGESTED_PROMPTS = [
+  "Resume review for tech or big tech roles",
+  "Interview prep for software engineering",
+  "Career advice at law firms or legal sector",
+  "Finance, banking, or investment roles",
+  "Graduate school or PhD application advice",
+  "Academic advice—research, teaching, fellowships",
+  "Financial literacy or managing student debt",
+  "LinkedIn and networking best practices",
+];
 
 export function FindAlumniClient() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [alumni, setAlumni] = useState<SourcedAlumni[]>([]);
+  const [selectedAlumni, setSelectedAlumni] = useState<SourcedAlumni | null>(null);
 
   async function handleSearch() {
     if (!query.trim() || !SOURCING_API_URL) {
@@ -41,27 +74,59 @@ export function FindAlumniClient() {
   }
 
   return (
-    <div className="find-alumni space-y-4 w-full max-w-4xl">
-      <p className="find-alumni__intro text-sm sm:text-base text-muted-foreground">
-        Ask for the <strong>help</strong> you need—e.g. resume for Microsoft or big tech, interview prep, career advice. We&apos;ll find alumni who match and show their cards so you can reach out on LinkedIn.
+    <div className="find-alumni space-y-6 w-full max-w-4xl">
+      <p className="find-alumni__intro text-base sm:text-lg text-muted-foreground leading-relaxed">
+        Ask for the <strong>help</strong> you need—resume review, interview prep, career advice. We&apos;ll match you with alumni you can reach out to on LinkedIn.
       </p>
-      <div className="find-alumni__form flex flex-col gap-3 sm:gap-4">
-        <textarea
-          placeholder="e.g. I need help with my resume for a software engineering role at Microsoft or another big tech company"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="find-alumni__input min-h-[120px] sm:min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-3 sm:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-          disabled={!SOURCING_API_URL}
-          aria-label="Describe the help you need"
-        />
-        <Button
-          onClick={handleSearch}
-          disabled={loading || !query.trim() || !SOURCING_API_URL}
-          className="find-alumni__submit w-full sm:w-auto min-h-[48px] sm:min-h-0"
-        >
-          {loading ? "Finding people who can help…" : "Find people who can help"}
-        </Button>
+
+      {/* Search card */}
+      <div className="find-alumni__card rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="p-4 sm:p-6">
+          <label htmlFor="find-alumni-query" className="block text-sm font-medium text-foreground mb-2">
+            What kind of help are you looking for?
+          </label>
+          <textarea
+            id="find-alumni-query"
+            placeholder="e.g. I need help with my resume for a software engineering role at Microsoft or another big tech company"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="find-alumni__input min-h-[140px] sm:min-h-[120px] w-full rounded-xl border border-border bg-background px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent resize-y"
+            disabled={!SOURCING_API_URL}
+            aria-label="Describe the help you need"
+          />
+          <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
+            Try a suggested prompt below or write your own.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {SUGGESTED_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => setQuery(prompt)}
+                disabled={!SOURCING_API_URL}
+                className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1.5 text-xs sm:text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground hover:border-primary/30 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+          <Button
+            onClick={handleSearch}
+            disabled={loading || !query.trim() || !SOURCING_API_URL}
+            className="find-alumni__submit w-full sm:w-auto min-h-[48px] px-6 text-base"
+          >
+            {loading ? "Searching…" : "Find people who can help"}
+          </Button>
+        </div>
       </div>
+
+      {loading && (
+        <div className="find-alumni__loading rounded-2xl border border-border bg-muted/30 py-10 sm:py-12">
+          <AILoader text="Finding alumni" size="large" />
+        </div>
+      )}
       {error && (
         <p className="find-alumni__error text-sm text-destructive" role="alert">
           {error}
@@ -84,11 +149,97 @@ export function FindAlumniClient() {
           </p>
           <div className="find-alumni__grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {alumni.map((a) => (
-              <SourcedAlumniCard key={a.id} alumni={a} />
+              <SourcedAlumniCard
+                key={a.id}
+                alumni={a}
+                onSelect={() => setSelectedAlumni(a)}
+              />
             ))}
           </div>
         </>
       )}
+
+      {/* Alumni detail modal */}
+      <Dialog open={!!selectedAlumni} onOpenChange={(open) => !open && setSelectedAlumni(null)}>
+        <DialogContent className="bg-card border-border max-w-md max-h-[90vh] overflow-y-auto">
+          {selectedAlumni && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="sr-only">{selectedAlumni.fullName}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-14 w-14 border border-border">
+                    <AvatarImage src={selectedAlumni.photo || undefined} alt={selectedAlumni.fullName} />
+                    <AvatarFallback className="bg-primary/20 text-primary text-lg">
+                      {selectedAlumni.fullName.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-foreground text-lg">{selectedAlumni.fullName}</h3>
+                    {selectedAlumni.headline && (
+                      <p className="text-sm text-muted-foreground mt-0.5">{selectedAlumni.headline}</p>
+                    )}
+                  </div>
+                </div>
+                {(selectedAlumni.currentTitle || selectedAlumni.currentCompany) && (
+                  <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Briefcase className="h-4 w-4 shrink-0" />
+                    {[selectedAlumni.currentTitle, selectedAlumni.currentCompany].filter(Boolean).join(" @ ")}
+                  </p>
+                )}
+                {selectedAlumni.location && (
+                  <p className="text-sm text-muted-foreground">{selectedAlumni.location}</p>
+                )}
+                {selectedAlumni.aboutSnippet && (
+                  <p className="text-sm text-muted-foreground">{selectedAlumni.aboutSnippet}</p>
+                )}
+                {(selectedAlumni.skills?.length ?? 0) > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedAlumni.skills!.map((s) => (
+                      <Badge key={s} variant="outline" className="text-xs font-normal">
+                        {s}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <div className="pt-2 border-t border-border space-y-2">
+                  <p className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    <span className="text-muted-foreground">Email:</span>
+                    <a
+                      href={`mailto:${getMockEmail(selectedAlumni)}`}
+                      className="text-primary hover:underline truncate"
+                    >
+                      {getMockEmail(selectedAlumni)}
+                    </a>
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAlumni.linkedinUrl && (
+                      <Button size="sm" variant="outline" className="border-primary/30 text-primary hover:bg-primary/10" asChild>
+                        <a
+                          href={selectedAlumni.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5"
+                        >
+                          LinkedIn <ExternalLink className="h-3.5 w-3.5" />
+                        </a>
+                      </Button>
+                    )}
+                    {/* TODO: implement chat — coming soon */}
+                    <Button size="sm" variant="secondary" disabled className="inline-flex items-center gap-1.5" title="Coming soon">
+                      <MessageCircle className="h-3.5 w-3.5" />
+                      Chat (coming soon)
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

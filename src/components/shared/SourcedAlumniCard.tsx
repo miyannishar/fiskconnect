@@ -15,15 +15,22 @@ import { Briefcase, ExternalLink } from "lucide-react";
 interface SourcedAlumniCardProps {
   alumni: SourcedAlumni;
   className?: string;
+  /** When set, the card is clickable and opens a detail view (e.g. modal). */
+  onSelect?: () => void;
 }
 
-export function SourcedAlumniCard({ alumni, className }: SourcedAlumniCardProps) {
+export function SourcedAlumniCard({ alumni, className, onSelect }: SourcedAlumniCardProps) {
   const skills = (alumni.skills ?? []).slice(0, 5);
 
   return (
     <Card
+      role={onSelect ? "button" : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      onClick={onSelect}
+      onKeyDown={onSelect ? (e) => e.key === "Enter" && onSelect() : undefined}
       className={cn(
         "sourced-alumni-card border-border/50 bg-card shadow-sm transition-shadow hover:shadow-md hover:border-primary/20",
+        onSelect && "cursor-pointer",
         className
       )}
     >
@@ -81,6 +88,7 @@ export function SourcedAlumniCard({ alumni, className }: SourcedAlumniCardProps)
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
             >
               View on LinkedIn <ExternalLink className="h-3 w-3" />
             </a>

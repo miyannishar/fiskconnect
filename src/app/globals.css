@@ -308,3 +308,57 @@
     --error: 0 84% 60%;
   }
 }
+
+/* AI loader: letter bounce + rotating circle */
+@keyframes ai-loader-letter {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ai-loader-rotate {
+  0% {
+    transform: rotate(90deg);
+    box-shadow:
+      0 10px 20px 0 hsl(var(--background)) inset,
+      0 20px 30px 0 hsl(var(--primary) / 0.4) inset,
+      0 60px 60px 0 hsl(var(--secondary) / 0.3) inset;
+  }
+  50% {
+    transform: rotate(270deg);
+    box-shadow:
+      0 10px 20px 0 hsl(var(--background)) inset,
+      0 20px 10px 0 hsl(var(--primary) / 0.5) inset,
+      0 40px 60px 0 hsl(var(--secondary) / 0.4) inset;
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow:
+      0 10px 20px 0 hsl(var(--background)) inset,
+      0 20px 30px 0 hsl(var(--primary) / 0.4) inset,
+      0 60px 60px 0 hsl(var(--secondary) / 0.3) inset;
+  }
+}
+
+.ai-loader__circle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: hsl(var(--muted));
+  animation: ai-loader-rotate 2s ease-in-out infinite;
+}
+
+.ai-loader__circle--large {
+  width: 4.5rem;
+  height: 4.5rem;
+}
