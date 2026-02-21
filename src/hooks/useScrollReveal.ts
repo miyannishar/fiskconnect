@@ -24,7 +24,7 @@ export function useScrollReveal(observerOptions?: IntersectionObserverInit) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [observerOptions?.rootMargin, observerOptions?.threshold]);
+  }, [observerOptions]);
 
   return ref;
 }

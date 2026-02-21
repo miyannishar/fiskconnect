@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Gift } from "lucide-react";
 import Link from "next/link";
 
