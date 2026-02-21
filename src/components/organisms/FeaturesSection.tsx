@@ -46,14 +46,14 @@ export function FeaturesSection() {
       className="features bg-background"
       aria-labelledby="features-heading"
     >
-      <div className="dayos-container py-12 sm:py-16 md:py-20">
+      <div className="dayos-container py-8 sm:py-12 md:py-16 lg:py-20">
         <h2
           id="features-heading"
-          className="font-condensed text-[2.75rem] sm:text-[3.5rem] md:text-[5rem] font-bold uppercase tracking-tight text-secondary"
+          className="font-condensed text-2xl sm:text-[2.75rem] md:text-[3.5rem] lg:text-[5rem] font-bold uppercase tracking-tight text-secondary"
         >
           How it works
         </h2>
-        <p className="mt-4 text-[1.6rem] text-muted-foreground max-w-2xl">
+        <p className="mt-3 sm:mt-4 text-base sm:text-[1.6rem] text-muted-foreground max-w-2xl">
           Three roles, one community. Your Fisk email determines your experience.
         </p>
 

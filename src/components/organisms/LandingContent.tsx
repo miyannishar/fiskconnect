@@ -54,7 +54,7 @@ function Section({
     <section
       ref={ref}
       className={cn(
-        "py-12 sm:py-16 md:py-20 animate-on-scroll",
+        "py-8 sm:py-12 md:py-16 lg:py-20 animate-on-scroll",
         dark ? "bg-secondary text-secondary-foreground" : "bg-background text-foreground",
         className
       )}
@@ -69,7 +69,7 @@ function SectionTitle({ children, className = "" }: { children: React.ReactNode;
     <h2
       className={cn(
         "font-condensed font-bold uppercase tracking-tight",
-        "text-[2.75rem] leading-[0.9] sm:text-[3.5rem] md:text-[5rem] lg:text-[6.4rem] md:leading-[0.9] tracking-[-0.03em]",
+        "text-2xl leading-[0.95] sm:text-[2.75rem] sm:leading-[0.9] md:text-[3.5rem] lg:text-[5rem] xl:text-[6.4rem] tracking-[-0.03em]",
         className
       )}
     >
@@ -86,7 +86,7 @@ export function LandingContent() {
       {/* Foundation: dayos pricing-card style */}
       <Section>
         <SectionTitle className="text-foreground">Built on what Fisk already has</SectionTitle>
-        <p className="mt-4 text-[1.6rem] text-muted-foreground max-w-2xl">
+        <p className="mt-4 text-base sm:text-[1.6rem] text-muted-foreground max-w-2xl">
           We’re not starting from zero. Fisk’s existing systems are the base; FiskConnect plugs into them.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mt-10 [&_.dayos-pricing-card]:col-span-1">
@@ -128,7 +128,7 @@ export function LandingContent() {
       {/* Opportunity: dayos carousel-card style (3 cards) */}
       <Section dark>
         <SectionTitle className="text-white">From platform to network</SectionTitle>
-        <p className="mt-4 text-white/80 text-[1.6rem] max-w-2xl">
+        <p className="mt-4 text-white/80 text-base sm:text-[1.6rem] max-w-2xl">
           Today’s tools are powerful, but often live outside the flow students use every day. The next step is bringing the network inside.
         </p>
         <div className="dayos-grid mt-10">
@@ -150,7 +150,7 @@ export function LandingContent() {
             </div>
           ))}
         </div>
-        <p className="mt-10 text-white/95 text-[1.6rem]">
+        <p className="mt-10 text-white/95 text-base sm:text-[1.6rem]">
           Not a replacement — an evolution. When connection lives where students already are, the network becomes part of daily life.
         </p>
       </Section>
@@ -158,7 +158,7 @@ export function LandingContent() {
       {/* One network, three corners: same carousel cards (no triangle) */}
       <Section>
         <SectionTitle className="text-foreground">One network, three corners</SectionTitle>
-        <p className="mt-4 text-muted-foreground text-[1.6rem] max-w-2xl">
+        <p className="mt-4 text-muted-foreground text-base sm:text-[1.6rem] max-w-2xl">
           Students, alumni, and administration stay in sync. FiskConnect sits inside the existing portal so everyone meets in one place.
         </p>
         <div className="dayos-grid mt-10">
@@ -188,7 +188,7 @@ export function LandingContent() {
       {/* Impact: dayos carousel cards (dark) */}
       <Section dark>
         <SectionTitle className="text-white">Impact that compounds</SectionTitle>
-        <p className="mt-4 text-white/80 text-[1.6rem] max-w-2xl">
+        <p className="mt-4 text-white/80 text-base sm:text-[1.6rem] max-w-2xl">
           From first connections to long-term community, the effects stack.
         </p>
         <div className="dayos-grid mt-10">
@@ -220,11 +220,11 @@ export function LandingContent() {
       {/* What it is + CTA: dayos carousel card (full width) */}
       <Section>
         <SectionTitle className="text-foreground">What FiskConnect is</SectionTitle>
-        <p className="mt-4 text-muted-foreground text-[1.6rem] leading-relaxed max-w-2xl">
+        <p className="mt-4 text-muted-foreground text-base sm:text-[1.6rem] leading-relaxed max-w-2xl">
           A proposal to turn Fisk’s alumni network into something students can actually use — every day. Built at the hackathon, designed to live inside Fisk’s portal and grow with the university.
         </p>
         <h3 className="font-condensed text-2xl font-bold uppercase mt-10 text-foreground">What it does</h3>
-        <ul className="mt-4 space-y-2 text-muted-foreground text-[1.6rem] list-none pl-0">
+        <ul className="mt-4 space-y-2 text-muted-foreground text-base sm:text-[1.6rem] list-none pl-0">
           <li className="flex items-start">
             <BulletIcon />
             <span>Bridges students and alumni directly</span>

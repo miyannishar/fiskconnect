@@ -130,18 +130,25 @@
 /* Dayos carousel-item-card style: image + details, rounded-3xl */
 .dayos-carousel-card {
   grid-column: span 12;
-  min-height: 18rem;
-  border-radius: 2.4rem;
+  min-height: 16rem;
+  border-radius: 1.25rem;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
 }
+@media (min-width: 640px) {
+  .dayos-carousel-card {
+    min-height: 18rem;
+    border-radius: 2rem;
+  }
+}
 @media (min-width: 768px) {
   .dayos-carousel-card {
     grid-column: span 4;
     min-height: 22rem;
+    border-radius: 2.4rem;
   }
 }
 .dayos-carousel-card__image {
@@ -153,11 +160,16 @@
 .dayos-carousel-card__details {
   width: 100%;
   flex: 1;
-  padding: 1.6rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+}
+@media (min-width: 640px) {
+  .dayos-carousel-card__details {
+    padding: 1.6rem;
+  }
 }
 .dayos-carousel-card--dark {
   background: rgba(255, 255, 255, 0.06);

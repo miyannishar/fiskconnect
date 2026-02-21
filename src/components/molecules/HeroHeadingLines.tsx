@@ -24,7 +24,7 @@ export function HeroHeadingLines({
     <h1
       className={cn(
         "hero-heading-lines font-condensed text-foreground uppercase font-bold tracking-tight",
-        "text-[4rem] leading-[0.9] sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem] md:leading-[0.9] tracking-[-0.03em]",
+        "text-[2.5rem] leading-[0.95] sm:text-[4rem] sm:leading-[0.9] md:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem] tracking-[-0.03em]",
         className
       )}
     >
@@ -38,7 +38,7 @@ export function HeroHeadingLines({
             <span
               className={cn(
                 "hero-heading-lines__line block whitespace-nowrap",
-                isMuted && "text-muted-foreground font-semibold text-[2.25rem] sm:text-[2.75rem] md:text-[3.25rem] lg:text-[3.75rem]",
+                isMuted && "text-muted-foreground font-semibold text-[1.5rem] sm:text-[2.25rem] md:text-[2.75rem] lg:text-[3.25rem] xl:text-[3.75rem]",
                 mounted && "hero-heading-lines__line--animate"
               )}
               style={mounted ? { animationDelay: `${i * 0.1}s` } : undefined}

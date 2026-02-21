@@ -90,13 +90,13 @@ export function FooterSection() {
         </div>
 
         {/* Bottom: legal, addresses, socials */}
-        <div className="footer__bottom mt-12 md:mt-16 pt-8 border-t border-white/20 text-sm text-white/50 font-mono tracking-tight">
+        <div className="footer__bottom mt-8 sm:mt-12 md:mt-16 pt-6 sm:pt-8 border-t border-white/20 text-xs sm:text-sm text-white/50 font-mono tracking-tight">
           <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end md:justify-between">
             <p className="md:max-w-md">
               Built with care at Future Fisk Hackathon 2026. FiskConnect bridges students, alumni & administration.
             </p>
-            <div className="flex items-center gap-4">
-              <span className="text-white/60">1000 17th Ave N, Nashville, TN 37208</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <span className="text-white/60 break-words">1000 17th Ave N, Nashville, TN 37208</span>
               <ul className="flex items-center gap-2">
                 {socialItems.map(({ href, label, icon: Icon }) => (
                   <li key={label}>
