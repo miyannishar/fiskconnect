@@ -31,6 +31,7 @@ export function DonationForm() {
   const [message, setMessage] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [donations, setDonations] = useState<{ id: string; amount: number; purpose: string; message: string | null; created_at: string }[]>([]);
   const supabase = createClient();
 
@@ -123,6 +124,11 @@ export function DonationForm() {
               <Switch checked={isAnonymous} onCheckedChange={setIsAnonymous} />
               <Label>Anonymous</Label>
             </div>
+            {submitError && (
+              <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2" role="alert">
+                {submitError}
+              </p>
+            )}
             <Button type="submit" className="rounded-lg" disabled={loading}>
               {loading ? "Processing…" : "Donate"}
             </Button>

@@ -40,16 +40,25 @@ export function AdminEventsClient({ initialEvents }: { initialEvents: EventWithO
 
   async function updateStatus(eventId: string, status: "approved" | "rejected") {
     setLoading(true);
-    await supabase
-      .from("events")
-      .update({ status, admin_notes: adminNotes || null })
-      .eq("id", eventId);
-    setEvents((prev) =>
-      prev.map((e) => (e.id === eventId ? { ...e, status, admin_notes: adminNotes || null } : e))
-    );
-    setSelected(null);
-    setAdminNotes("");
-    setLoading(false);
+    try {
+      const { error } = await supabase
+        .from("events")
+        .update({ status, admin_notes: adminNotes || null })
+        .eq("id", eventId);
+      if (error) {
+        console.error("[Admin event update]", error);
+        return;
+      }
+      setEvents((prev) =>
+        prev.map((e) => (e.id === eventId ? { ...e, status, admin_notes: adminNotes || null } : e))
+      );
+      setSelected(null);
+      setAdminNotes("");
+    } catch (err) {
+      console.error("[Admin event update] Caught error", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

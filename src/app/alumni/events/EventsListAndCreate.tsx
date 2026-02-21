@@ -43,6 +43,7 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
   const [isVirtual, setIsVirtual] = useState(false);
   const [virtualLink, setVirtualLink] = useState("");
   const [maxAttendees, setMaxAttendees] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -61,16 +62,19 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const log = (msg: string, data?: unknown) => console.log("[Create event]", msg, data ?? "");
+    setSubmitError(null);
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    const dateTime = date && time ? `${date}T${time}:00` : date ? `${date}T12:00:00` : new Date().toISOString();
-    const { data: inserted, error } = await supabase
-      .from("events")
-      .insert({
+    log("Submit started");
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      log("getUser result", { userId: user?.id ?? null });
+      if (!user) {
+        setSubmitError("You must be signed in to create an event request.");
+        return;
+      }
+      const dateTime = date && time ? `${date}T${time}:00` : date ? `${date}T12:00:00` : new Date().toISOString();
+      const payload = {
         organizer_id: user.id,
         title: title.trim(),
         description: description.trim(),
@@ -81,11 +85,24 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
         virtual_link: isVirtual ? virtualLink.trim() || null : null,
         max_attendees: maxAttendees ? parseInt(maxAttendees, 10) : null,
         status: "pending",
-      })
-      .select()
-      .single();
+      };
+      log("Insert payload", payload);
+      const { data: inserted, error } = await supabase
+        .from("events")
+        .insert(payload)
+        .select()
+        .single();
 
-    if (!error && inserted) {
+      log("Insert result", { inserted: !!inserted, error: error?.message ?? null, details: error ?? null });
+
+      if (error) {
+        setSubmitError(error.message || "Failed to submit event request.");
+        return;
+      }
+      if (!inserted) {
+        setSubmitError("Something went wrong. Please try again.");
+        return;
+      }
       setEvents([...events, { ...inserted, organizerName: undefined }]);
       setOpen(false);
       setTitle("");
@@ -97,18 +114,27 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
       setIsVirtual(false);
       setVirtualLink("");
       setMaxAttendees("");
+      log("Success — dialog closed, list updated");
+    } catch (err) {
+      console.error("[Create event] Caught error", err);
+      setSubmitError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleRsvp(eventId: string) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    await supabase.from("event_rsvps").upsert(
-      { event_id: eventId, user_id: user.id, status: "going" },
-      { onConflict: "event_id,user_id" }
-    );
-    setRsvps((prev) => ({ ...prev, [eventId]: "going" }));
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { error } = await supabase.from("event_rsvps").upsert(
+        { event_id: eventId, user_id: user.id, status: "going" },
+        { onConflict: "event_id,user_id" }
+      );
+      if (!error) setRsvps((prev) => ({ ...prev, [eventId]: "going" }));
+    } catch (err) {
+      console.error("[Event RSVP] Caught error", err);
+    }
   }
 
   return (
@@ -120,11 +146,16 @@ export function EventsListAndCreate({ initialEvents }: { initialEvents: EventWit
               <Plus className="h-4 w-4" /> Create event request
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto" onOpenAutoFocus={() => setSubmitError(null)}>
             <DialogHeader>
               <DialogTitle>Create event request</DialogTitle>
               <p className="text-sm text-muted-foreground">Events require admin approval.</p>
             </DialogHeader>
+            {submitError && (
+              <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2" role="alert">
+                {submitError}
+              </p>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Title</Label>
