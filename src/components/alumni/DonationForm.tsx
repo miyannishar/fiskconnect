@@ -55,29 +55,36 @@ export function DonationForm() {
     e.preventDefault();
     const num = parseFloat(amount);
     if (isNaN(num) || num <= 0) return;
+    setSubmitError(null);
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    const { error } = await supabase.from("donations").insert({
-      donor_id: user.id,
-      amount: num,
-      purpose,
-      message: message.trim() || null,
-      is_anonymous: isAnonymous,
-    });
-
-    if (!error) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setSubmitError("You must be signed in to donate.");
+        return;
+      }
+      const { error } = await supabase.from("donations").insert({
+        donor_id: user.id,
+        amount: num,
+        purpose,
+        message: message.trim() || null,
+        is_anonymous: isAnonymous,
+      });
+      if (error) {
+        setSubmitError(error.message || "Failed to submit donation.");
+        return;
+      }
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       setAmount("");
       setPurpose("general");
       setMessage("");
       setIsAnonymous(false);
       loadDonations();
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
