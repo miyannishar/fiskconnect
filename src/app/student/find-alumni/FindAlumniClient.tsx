@@ -41,27 +41,29 @@ export function FindAlumniClient() {
   }
 
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
+    <div className="find-alumni space-y-4 w-full max-w-4xl">
+      <p className="find-alumni__intro text-sm sm:text-base text-muted-foreground">
         Ask for the <strong>help</strong> you need—e.g. resume for Microsoft or big tech, interview prep, career advice. We&apos;ll find alumni who match and show their cards so you can reach out on LinkedIn.
       </p>
-      <div className="flex flex-col gap-2">
+      <div className="find-alumni__form flex flex-col gap-3 sm:gap-4">
         <textarea
           placeholder="e.g. I need help with my resume for a software engineering role at Microsoft or another big tech company"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="min-h-[100px] w-full max-w-xl rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+          className="find-alumni__input min-h-[120px] sm:min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-3 sm:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           disabled={!SOURCING_API_URL}
+          aria-label="Describe the help you need"
         />
         <Button
           onClick={handleSearch}
           disabled={loading || !query.trim() || !SOURCING_API_URL}
+          className="find-alumni__submit w-full sm:w-auto min-h-[48px] sm:min-h-0"
         >
           {loading ? "Finding people who can help…" : "Find people who can help"}
         </Button>
       </div>
       {error && (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="find-alumni__error text-sm text-destructive" role="alert">
           {error}
         </p>
       )}
@@ -71,14 +73,16 @@ export function FindAlumniClient() {
         </p>
       )}
       {alumni.length === 0 && !loading && !error && SOURCING_API_URL && query.trim() && (
-        <p className="py-8 text-center text-muted-foreground">No matching alumni yet. Try describing the help you need above.</p>
+        <p className="find-alumni__empty py-8 text-center text-muted-foreground text-sm sm:text-base">
+          No matching alumni yet. Try describing the help you need above.
+        </p>
       )}
       {alumni.length > 0 && (
         <>
-          <p className="text-sm text-muted-foreground">
+          <p className="find-alumni__results-label text-sm text-muted-foreground">
             Alumni who may be able to help—reach out via LinkedIn.
           </p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="find-alumni__grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {alumni.map((a) => (
               <SourcedAlumniCard key={a.id} alumni={a} />
             ))}

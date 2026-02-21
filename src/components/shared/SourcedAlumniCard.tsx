@@ -23,7 +23,7 @@ export function SourcedAlumniCard({ alumni, className }: SourcedAlumniCardProps)
   return (
     <Card
       className={cn(
-        "border-border/50 bg-card shadow-sm transition-shadow hover:shadow-md hover:border-primary/20",
+        "sourced-alumni-card border-border/50 bg-card shadow-sm transition-shadow hover:shadow-md hover:border-primary/20",
         className
       )}
     >

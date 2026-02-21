@@ -5,8 +5,8 @@ import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md border-border bg-card shadow-lg">
+    <div className="auth-page flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-6">
+      <Card className="auth-page__card w-full max-w-md border-border bg-card shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <Link
             href="/"

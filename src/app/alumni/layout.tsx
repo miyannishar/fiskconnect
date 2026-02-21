@@ -32,11 +32,11 @@ export default async function AlumniLayout({
 
   return (
     <AlumniOnboardingGuard>
-      <div className="min-h-screen bg-background">
+      <div className="alumni-layout min-h-screen bg-background text-foreground">
         <Sidebar navItems={alumniNavItems} />
-        <div className="md:pl-60 min-h-screen flex flex-col">
+        <div className="alumni-layout__main relative z-0 md:pl-60 min-h-screen flex flex-col pb-20 md:pb-0">
           <Navbar title="FiskConnect" />
-          <main className="flex-1 p-4 md:p-6">{children}</main>
+          <main className="alumni-layout__content flex-1 min-h-0 min-h-[50vh] p-4 sm:p-5 md:p-6 bg-background text-foreground">{children}</main>
         </div>
       </div>
     </AlumniOnboardingGuard>

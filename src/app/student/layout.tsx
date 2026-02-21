@@ -20,11 +20,13 @@ export default async function StudentLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="student-layout min-h-screen bg-background text-foreground">
       <Sidebar navItems={studentNavItems} />
-      <div className="md:pl-60 min-h-screen flex flex-col">
+      <div className="student-layout__main relative z-0 md:pl-60 min-h-screen flex flex-col pb-20 md:pb-0">
         <Navbar title="FiskConnect" />
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <main className="student-layout__content flex-1 min-h-0 min-h-[50vh] p-4 sm:p-5 md:p-6 bg-background text-foreground">
+          {children}
+        </main>
       </div>
     </div>
   );

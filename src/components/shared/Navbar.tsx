@@ -21,15 +21,15 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
 
   if (loading) {
     return (
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
-        <span className="font-semibold text-foreground">{title}</span>
-        <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
+      <header className="app-navbar sticky top-0 z-30 flex h-14 min-h-[56px] items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
+        <span className="font-semibold text-foreground truncate">{title}</span>
+        <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-muted" />
       </header>
     );
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:pl-60">
+    <header className="app-navbar sticky top-0 z-30 flex h-14 min-h-[56px] items-center justify-between gap-2 border-b border-border bg-card px-4 shadow-sm md:pl-60">
       <Link
         href={
           profile
@@ -49,9 +49,9 @@ export function Navbar({ title = "FiskConnect" }: NavbarProps) {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="app-navbar__user flex items-center gap-2 rounded-lg px-2 py-2 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <Avatar className="h-8 w-8 border border-border">
+              <Avatar className="h-8 w-8 md:h-8 md:w-8 border border-border shrink-0">
                 <AvatarImage
                   src={profile.avatar_url ?? undefined}
                   alt={profile.full_name ?? profile.email}
