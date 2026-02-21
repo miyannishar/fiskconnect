@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { OpportunityCard } from "@/components/shared/OpportunityCard";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,9 @@ export function OpportunitiesListAndPost({
   initialOpportunities: OpportunityWithAuthor[];
 }) {
   const [opportunities, setOpportunities] = useState(initialOpportunities);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [locationFilter, setLocationFilter] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
@@ -45,19 +48,24 @@ export function OpportunitiesListAndPost({
   const [isRemote, setIsRemote] = useState(false);
   const [link, setLink] = useState("");
   const [tags, setTags] = useState("");
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const supabase = createClient();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const log = (msg: string, data?: unknown) => console.log("[Post opportunity]", msg, data ?? "");
+    setSubmitError(null);
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    const { data: inserted, error } = await supabase
-      .from("opportunities")
-      .insert({
+    log("Submit started");
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      log("getUser result", { userId: user?.id ?? null, authError: authError?.message ?? null });
+      if (!user) {
+        log("No user — aborting");
+        setSubmitError("You must be signed in to post an opportunity.");
+        return;
+      }
+      const payload = {
         author_id: user.id,
         title: title.trim(),
         description: description.trim(),
@@ -67,11 +75,27 @@ export function OpportunitiesListAndPost({
         is_remote: isRemote,
         link: link.trim() || null,
         tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : null,
-      })
-      .select()
-      .single();
+        status: "open",
+      };
+      log("Insert payload", payload);
+      const { data: inserted, error } = await supabase
+        .from("opportunities")
+        .insert(payload)
+        .select()
+        .single();
 
-    if (!error && inserted) {
+      log("Insert result", { inserted: !!inserted, error: error?.message ?? null, details: error ?? null });
+
+      if (error) {
+        setSubmitError(error.message || "Failed to post opportunity.");
+        return;
+      }
+      if (!inserted) {
+        log("Insert returned no data");
+        setSubmitError("Something went wrong. Please try again.");
+        return;
+      }
+      log("Fetching profile for author");
       const profile = await supabase.from("profiles").select("full_name").eq("id", user.id).single();
       setOpportunities([
         { ...inserted, authorName: profile.data?.full_name ?? null },
@@ -86,23 +110,77 @@ export function OpportunitiesListAndPost({
       setIsRemote(false);
       setLink("");
       setTags("");
+      log("Success — dialog closed, list updated");
+    } catch (err) {
+      console.error("[Post opportunity] Caught error", err);
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setSubmitError(message);
+    } finally {
+      log("Finally — setLoading(false)");
+      setLoading(false);
     }
-    setLoading(false);
   }
+
+  const filtered = useMemo(() => {
+    return opportunities.filter((o) => {
+      const matchSearch =
+        !search ||
+        o.title.toLowerCase().includes(search.toLowerCase()) ||
+        (o.description?.toLowerCase().includes(search.toLowerCase())) ||
+        (o.company?.toLowerCase().includes(search.toLowerCase()));
+      const matchType = typeFilter === "all" || o.type === typeFilter;
+      const matchLocation =
+        !locationFilter ||
+        (o.location?.toLowerCase().includes(locationFilter.toLowerCase()));
+      return matchSearch && matchType && matchLocation;
+    });
+  }, [opportunities, search, typeFilter, locationFilter]);
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+        <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+          <Input
+            placeholder="Search by keyword..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-card border-border max-w-xs"
+          />
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-[180px] bg-card border-border">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All types</SelectItem>
+              {TYPES.map((t) => (
+                <SelectItem key={t} value={t}>
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input
+            placeholder="Location"
+            value={locationFilter}
+            onChange={(e) => setLocationFilter(e.target.value)}
+            className="bg-card border-border max-w-xs"
+          />
+        </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-lg gap-2">
+            <Button className="rounded-lg gap-2 shrink-0">
               <Plus className="h-4 w-4" /> Post opportunity
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-card border-border max-w-lg max-h-[90vh] overflow-y-auto" onOpenAutoFocus={() => setSubmitError(null)}>
             <DialogHeader>
               <DialogTitle>Post an opportunity</DialogTitle>
             </DialogHeader>
+            {submitError && (
+              <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2" role="alert">
+                {submitError}
+              </p>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label>Title</Label>
@@ -155,11 +233,15 @@ export function OpportunitiesListAndPost({
         </Dialog>
       </div>
 
-      {opportunities.length === 0 ? (
-        <p className="text-muted-foreground text-center py-12">No opportunities yet. Be the first to post one!</p>
+      {filtered.length === 0 ? (
+        <p className="text-muted-foreground text-center py-12">
+          {opportunities.length === 0
+            ? "No opportunities yet. Be the first to post one!"
+            : "No opportunities match your filters."}
+        </p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {opportunities.map((o) => (
+          {filtered.map((o) => (
             <OpportunityCard key={o.id} opportunity={o} authorName={o.authorName} showViewDetails />
           ))}
         </div>

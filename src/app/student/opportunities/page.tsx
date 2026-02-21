@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { StudentOpportunitiesClient } from "./StudentOpportunitiesClient";
+import { OpportunitiesListAndPost } from "@/app/alumni/opportunities/OpportunitiesListAndPost";
 import type { Opportunity } from "@/lib/types";
 import type { Profile } from "@/lib/types";
 
@@ -21,9 +21,9 @@ export default async function StudentOpportunitiesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Opportunity Board"
-        description="Browse internships, jobs, and more from alumni and partners."
+        description="Browse and post internships, jobs, and more. Open to students and alumni."
       />
-      <StudentOpportunitiesClient initialOpportunities={list} />
+      <OpportunitiesListAndPost initialOpportunities={list} />
     </div>
   );
 }
