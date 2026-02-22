@@ -16,6 +16,10 @@ A Next.js 14 (App Router) + Supabase platform connecting Fisk University student
 https://github.com/user-attachments/assets/077af60d-1472-4cd3-bd79-91c8232f43d3
 
 
+
+https://github.com/user-attachments/assets/bd1c0511-2732-466d-a646-eeb5acd043ca
+
+
 ## Tech Stack
 
 - **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
