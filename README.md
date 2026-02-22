@@ -2,6 +2,9 @@
 
 A Next.js 14 (App Router) + Supabase platform connecting Fisk University students, alumni, and administration. Role is determined by email domain at signup.
 
+https://github.com/user-attachments/assets/077af60d-1472-4cd3-bd79-91c8232f43d3
+
+
 ## Tech Stack
 
 - **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
