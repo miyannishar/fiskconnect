@@ -1,5 +1,16 @@
 # FiskConnect
 
+Every year, Fisk students graduate without ever meeting the alumni who could have changed their lives.
+Not because Bulldogs don’t care.
+But because the network isn’t activated where students live, learn, and grow.
+
+We don’t lack alumni.
+We lack infrastructure.
+
+And that’s exactly what FiskConnect is built to change.
+
+
+
 A Next.js 14 (App Router) + Supabase platform connecting Fisk University students, alumni, and administration. Role is determined by email domain at signup.
 
 https://github.com/user-attachments/assets/077af60d-1472-4cd3-bd79-91c8232f43d3
